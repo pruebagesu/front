@@ -23,7 +23,7 @@ const SearchForm = ({ setSearchText, placeholder = "Buscar..." }: Props) => {
         setSearchText(value)
       }}
     >
-      <Flex mt={5} gap={3} pl={1}>
+      <Flex mt={5} gap={3} pl={1} mb={2}>
         <InputGroup>
           <Input
             placeholder={placeholder}

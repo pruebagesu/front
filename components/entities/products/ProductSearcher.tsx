@@ -70,6 +70,7 @@ const ProductSearcher = () => {
         colorScheme="purple"
         isDisabled={selectedProducts.length === 0}
         onClick={handleSelect}
+        mt={4}
       >
         Finalizar selección
       </Button>
