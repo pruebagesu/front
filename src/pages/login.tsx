@@ -57,7 +57,12 @@ const Login: NextPage = () => {
         <Heading textAlign="center" mb={4}>
           Iniciar sesión
         </Heading>
-        <MyForm zodSchema={LoginSchema} onSubmit={onSubmit} onError={onError}>
+        <MyForm
+          zodSchema={LoginSchema}
+          onSubmit={onSubmit}
+          onError={onError}
+          defaultValues={{ email: "ignaciogesualdo@gmail.com", code: "123456" }}
+        >
           <MyInput fieldName="email" label="Email" />
           <MyInput fieldName="code" label="Código" />
           <LoginButtons />
