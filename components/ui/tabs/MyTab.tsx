@@ -1,5 +1,6 @@
 import { Tab } from "@chakra-ui/react"
 import React from "react"
+import IconFA from "../icons/IconFA"
 
 const MyTab = ({ text, icon }: { text: string; icon: string }) => {
   return (
@@ -10,7 +11,7 @@ const MyTab = ({ text, icon }: { text: string; icon: string }) => {
       className="bs" // de styles.css
       mr={1.5}
     >
-      <i className={`${icon} mr4`} />
+      <IconFA icon={icon} className="mr5 ml-3" />
       {text}
     </Tab>
   )
