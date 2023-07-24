@@ -6,10 +6,14 @@ import ProductItem from "./ProductItem"
 import { ProductFromDB } from "schemas/ProductSchema"
 import ProductForm from "./ProductForm"
 import MyModal from "components/ui/modals/MyModal"
+import useFetch from "hooks/useFetch"
 
 const ProductsPanel = () => {
-  const [searchText, setSearchText] = useState("")
-  const [selectedProduct, setSelectedProduct] = useState<ProductFromDB | null>()
+  const [selectedItem, setSelectedItem] = useState<ProductFromDB | null>()
+  const { data, isLoading, refetch, setSearchText } = useFetch<ProductFromDB>({
+    path: "products",
+    params: { toSell: false },
+  })
 
   return (
     <TabPanel p={0}>
@@ -17,62 +21,35 @@ const ProductsPanel = () => {
         placeholder="Buscar producto..."
         setSearchText={setSearchText}
       />
-      <List<ProductFromDB>
-        path="products"
-        urlParams={{ searchText, toSell: false }}
-      >
-        {({ items, refetch }) => (
-          <>
-            <Flex
-              flexDirection="column"
-              p={1}
-              gap={2}
-              my={4}
-              maxHeight="40vh"
-              overflowY="scroll"
-            >
-              {items.map((p) => (
-                <ProductItem
-                  key={p._id}
-                  product={p}
-                  onClick={(p) => {
-                    const valueToSet = p._id === selectedProduct?._id ? null : p
-                    setSelectedProduct(valueToSet)
-                  }}
-                  selected={p._id === selectedProduct?._id}
-                />
-              ))}
-            </Flex>
-            <Flex>
-              <MyModal
-                title={(selectedProduct ? "Editar " : "Nuevo ") + "producto"}
-                mr={2}
-              >
-                {() => (
-                  <ProductForm
-                    productId={selectedProduct?._id}
-                    refetch={refetch}
-                  />
-                )}
-              </MyModal>
-              <MyModal
-                title={`Replicar ${selectedProduct?.name || ""}`}
-                mr={2}
-                colorScheme="green"
-                disableButton={!selectedProduct}
-              >
-                {() => (
-                  <ProductForm
-                    productId={selectedProduct?._id}
-                    refetch={refetch}
-                    submitText="Replicar"
-                  />
-                )}
-              </MyModal>
-            </Flex>
-          </>
-        )}
-      </List>
+
+      <List
+        items={data}
+        isLoading={isLoading}
+        ListItem={ProductItem}
+        selectedItem={selectedItem}
+        setSelectedItem={setSelectedItem}
+      />
+
+      <Flex>
+        <MyModal
+          title={(selectedItem ? "Editar " : "Nuevo ") + "producto"}
+          mr={2}
+        >
+          <ProductForm productId={selectedItem?._id} refetch={refetch} />
+        </MyModal>
+        <MyModal
+          title={`Replicar ${selectedItem?.name || ""}`}
+          mr={2}
+          colorScheme="green"
+          disableButton={!selectedItem}
+        >
+          <ProductForm
+            productId={selectedItem?._id}
+            refetch={refetch}
+            submitText="Replicar"
+          />
+        </MyModal>
+      </Flex>
     </TabPanel>
   )
 }

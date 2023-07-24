@@ -8,7 +8,7 @@ import {
   useDisclosure,
   Button,
 } from "@chakra-ui/react"
-import { ReactElement } from "react"
+import React, { ReactElement, ReactNode } from "react"
 import { Sizes } from "schemas/UiSchemas"
 
 interface Props {
@@ -16,7 +16,10 @@ interface Props {
   buttonText?: string
   disableButton?: boolean
   size?: Sizes
-  children: (props: { onClose: () => void }) => ReactElement
+  children:
+    | ReactElement<any, any>
+    | ReactNode
+    | ((props: { onClose: () => void }) => ReactElement)
   colorScheme?: string
   mr?: number
 }
@@ -31,6 +34,8 @@ const MyModal = ({
   mr = 0,
 }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const isChildrenAFunction = typeof children === "function"
 
   return (
     <>
@@ -49,7 +54,9 @@ const MyModal = ({
         <ModalContent>
           <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>{children({ onClose })}</ModalBody>
+          <ModalBody>
+            {isChildrenAFunction ? children({ onClose }) : children}
+          </ModalBody>
         </ModalContent>
       </Modal>
     </>
