@@ -13,7 +13,12 @@ function List<T>({
   fdr,
   my = 4,
 }: ListProps<ListGeneric<T>>) {
-  if (isLoading) return <Spinner alignSelf="center" mt={20} mb={20} />
+  if (isLoading)
+    return (
+      <Flex width="100%" className="aic jcc">
+        <Spinner alignSelf="center" mt={20} mb={20} />
+      </Flex>
+    )
   if (!items || items?.length === 0) return <NoItemsFound />
 
   let finalItems = items

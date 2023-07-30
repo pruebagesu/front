@@ -1,4 +1,5 @@
-import { Card, Flex, Text, useToast } from "@chakra-ui/react"
+import { Flex, Text, useToast } from "@chakra-ui/react"
+import ListItemWrapper from "components/ui/lists/ListItemWrapper"
 import { copyToClipboard } from "helpers/copyToClipboard"
 import { ClientFromDB } from "schemas/ClientSchema"
 
@@ -14,25 +15,7 @@ const ClientItem = ({ item, onClick, selected }: Props) => {
   const toast = useToast()
   console.log({ item })
   return (
-    <Card
-      key={item._id}
-      py={2}
-      px={4}
-      cursor="pointer"
-      bg={selected ? "gray.100" : "white"}
-      color="black"
-      _hover={
-        selected
-          ? {}
-          : {
-              backgroundColor: "gray.100",
-              color: "#222",
-            }
-      }
-      onClick={() => onClick(item)}
-      flexDir="row"
-      justifyContent="space-between"
-    >
+    <ListItemWrapper onClick={() => onClick(item)} selected={selected}>
       <Flex flexDir="column">
         <Text>
           {item.firstname} {item.lastname}
@@ -70,7 +53,7 @@ const ClientItem = ({ item, onClick, selected }: Props) => {
           </Text>
         )}
       </Flex>
-    </Card>
+    </ListItemWrapper>
   )
 }
 
