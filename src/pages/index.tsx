@@ -20,7 +20,7 @@ const Home: NextPage = () => {
         <AppHeader />
 
         <Tabs variant="enclosed" colorScheme="blue" isLazy>
-          <TabList>
+          <TabList border="none">
             <MyTab text="Ventas" icon="fas fa-dollar" />
             <MyTab text="Clientes" icon="fas fa-user" />
             <MyTab text="Productos" icon="fas fa-shopping-cart" />

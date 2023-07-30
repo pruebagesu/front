@@ -1,65 +1,72 @@
-import { Flex, TabPanel } from "@chakra-ui/react"
+import { TabPanel } from "@chakra-ui/react"
 import MyModal from "components/ui/modals/MyModal"
 import { useState } from "react"
 import { SaleFromDB } from "schemas/SaleSchema"
 import SaleForm from "./SaleForm"
-import SalesSummary from "./SalesSummary"
+// import SalesSummary from "./SalesSummary"
 import List from "components/ui/lists/List"
 import SaleItem from "./SaleItem"
+import useFetch from "hooks/useFetch"
+import SaleSummaryItem from "./SaleSummaryItem"
+import { SummarySaleFromDB } from "schemas/SaleSchema"
+
+type Period = { month: number | undefined; year: number | undefined }
 
 const SalesPanel = () => {
-  const [selectedSale, setSelectedSale] = useState<SaleFromDB | null>()
-  const [selectedMonth, setSelectedMonth] = useState<number | null>(null)
-  const [selectedYear, setSelectedYear] = useState<number | null>(null)
+  const [selectedItem, setSelectedItem] = useState<SaleFromDB | null>()
+  const [selectedPeriod, setSelectedPeriod] = useState<Period>({
+    month: undefined,
+    year: undefined,
+  })
+
+  const { data, isLoading } = useFetch<SaleFromDB>({
+    path: "sales",
+    params: { toSell: false },
+  })
+  const summary = useFetch<SummarySaleFromDB>({
+    path: "sales/summary",
+    refetchOnMount: true,
+    staleTime: 0,
+  })
 
   return (
     <TabPanel p={0}>
-      <SalesSummary
-        setSelectedMonth={setSelectedMonth}
-        selectedMonth={selectedMonth}
-        setSelectedYear={setSelectedYear}
-        selectedYear={selectedYear}
+      <List
+        items={summary.data}
+        isLoading={summary.isLoading}
+        ListItem={SaleSummaryItem}
+        isSelected={(p) =>
+          p?._id.month === selectedPeriod?.month &&
+          p?._id.year === selectedPeriod?.year
+        }
+        onItemClick={(p, selected) => {
+          const monthToSet = selected ? undefined : p?._id?.month
+          const yearToSet = selected ? undefined : p?._id?.year
+          setSelectedPeriod({ month: monthToSet, year: yearToSet })
+        }}
+        fdr
+        my={1}
       />
-
-      <List<SaleFromDB>
-        path="sales"
-        urlParams={{ month: selectedMonth, year: selectedYear }}
+      <List
+        items={data}
+        isLoading={isLoading}
+        ListItem={SaleItem}
+        isSelected={(s) => s?._id === selectedItem?._id}
+        onItemClick={(s) => {
+          const valueToSet = s?._id === selectedItem?._id ? null : s
+          setSelectedItem(valueToSet)
+        }}
+      />
+      <MyModal
+        title="Detalle"
+        buttonText="Ver venta"
+        colorScheme="blue"
+        disableButton={!selectedItem}
       >
-        {({ items }) => (
-          <>
-            <Flex
-              flexDirection="column"
-              p={1}
-              gap={2}
-              my={4}
-              maxHeight="40vh"
-              overflowY="scroll"
-            >
-              {items.map((s) => (
-                <SaleItem
-                  key={s._id}
-                  sale={s}
-                  onClick={(s) => {
-                    const valueToSet = s._id === selectedSale?._id ? null : s
-                    setSelectedSale(valueToSet)
-                  }}
-                  selected={selectedSale?._id === s._id}
-                />
-              ))}
-            </Flex>
-            <MyModal
-              title=""
-              buttonText="Ver venta"
-              colorScheme="blue"
-              disableButton={!selectedSale}
-            >
-              {({ onClose }) => (
-                <SaleForm saleId={selectedSale?._id} onClose={onClose} />
-              )}
-            </MyModal>
-          </>
+        {({ onClose }) => (
+          <SaleForm saleId={selectedItem?._id} onClose={onClose} />
         )}
-      </List>
+      </MyModal>
     </TabPanel>
   )
 }

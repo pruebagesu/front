@@ -1,54 +1,43 @@
-import { Flex, Spinner, Text } from "@chakra-ui/react"
-import { ReactNode } from "react"
-import useFetch from "hooks/useFetch"
-import paramsGenerator from "helpers/paramsGenerator"
+import { Flex, Spinner } from "@chakra-ui/react"
+import NoItemsFound from "./NoItemsFound"
+import { ListProps } from "schemas/UiSchemas"
+import { ListGeneric } from "../../../schemas/UiSchemas"
 
-interface Props<T> {
-  path: string
-  urlParams: { [key: string]: boolean | number | string | null }
-  sortFunction?: (a: T, b: T) => number
-  filterFunction?: (item: T) => boolean
-  children: (props: { refetch: () => void; items: T[] }) => ReactNode
-}
-
-const List = <T,>({
-  path,
-  urlParams,
-  sortFunction,
+function List<T>({
+  items,
+  isLoading,
+  ListItem,
   filterFunction,
-  children,
-}: Props<T>) => {
-  const PARAMS = paramsGenerator(urlParams)
-  const { data, isLoading, refetch } = useFetch<T>({
-    path,
-    params: PARAMS,
-  })
+  isSelected,
+  onItemClick,
+  fdr,
+  my = 4,
+}: ListProps<ListGeneric<T>>) {
+  if (isLoading) return <Spinner alignSelf="center" mt={20} mb={20} />
+  if (!items || items?.length === 0) return <NoItemsFound />
 
-  let finalData = data || []
+  let finalItems = items
   if (typeof filterFunction === "function") {
-    finalData = data?.filter(filterFunction) || []
+    finalItems = items.filter(filterFunction)
   }
-
-  if (typeof sortFunction === "function") {
-    finalData = data?.sort(sortFunction) || []
-  }
-
-  const noData = !finalData || finalData.length === 0
 
   return (
-    <Flex flexDir="column">
-      {isLoading && <Spinner alignSelf="center" mt={20} mb={20} />}
-      {noData && !isLoading && (
-        <Text mt={5} mb={25} textAlign="center">
-          No se encontraron registros en la base de datos
-        </Text>
-      )}
-
-      {finalData && (
-        <Flex flexDirection="column" p={1} gap={2}>
-          {children({ refetch, items: finalData })}
-        </Flex>
-      )}
+    <Flex
+      flexDirection={fdr ? "row" : "column"}
+      p={1}
+      gap={2}
+      my={my}
+      maxHeight={items.length > 5 ? "40vh" : "auto"}
+      overflowY={items.length > 5 ? "scroll" : "auto"}
+    >
+      {finalItems.map((item, index) => (
+        <ListItem
+          key={index}
+          item={item}
+          onClick={(item) => onItemClick(item, isSelected(item))}
+          selected={isSelected(item)}
+        />
+      ))}
     </Flex>
   )
 }

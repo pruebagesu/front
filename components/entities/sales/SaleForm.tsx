@@ -83,13 +83,18 @@ const SaleForm = ({
         <MyInput type="hidden" fieldName="subtotal" label="" valueAsNumber />
         <MyInput type="hidden" fieldName="iva" label="" valueAsNumber />
         <MyInput type="hidden" fieldName="discounts" label="" valueAsNumber />
-        <Flex alignItems="center" justifyContent={"space-between"} mb={3}>
+        <Flex
+          alignItems="center"
+          w="100%"
+          justifyContent="space-between"
+          mb={3}
+        >
           <Heading size="lg" m={0}>
             Productos
           </Heading>
           {!saleId && (
             <MyModal title="Elegir productos" buttonText="Agregar" size="xs">
-              {() => <ProductSearcher />}
+              <ProductSearcher />
             </MyModal>
           )}
         </Flex>
@@ -110,9 +115,7 @@ const SaleForm = ({
               buttonText="Agregar"
               size="xs"
             >
-              {({ onClose }) => (
-                <PaymentMethodForm onClose={onClose} comissions={comissions} />
-              )}
+              <PaymentMethodForm comissions={comissions} />
             </MyModal>
           )}
         </Flex>
