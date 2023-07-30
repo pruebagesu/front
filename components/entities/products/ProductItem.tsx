@@ -6,22 +6,22 @@ import ListItemWrapper from "components/ui/lists/ListItemWrapper"
 import { copyToClipboard } from "helpers/copyToClipboard"
 
 interface Props {
-  product: ProductFromDB
+  item: ProductFromDB
   onClick: (product: ProductFromDB) => void
   selected?: boolean
 }
 
-const ProductItem = ({ product, onClick, selected }: Props) => {
-  const productPrice = calcProductPrice(product, true)
+const ProductItem = ({ item, onClick, selected }: Props) => {
+  const productPrice = calcProductPrice(item, true)
   const toast = useToast()
-  const { discount, formattedDiscount } = getProductDiscount(product)
+  const { discount, formattedDiscount } = getProductDiscount(item)
 
   return (
-    <ListItemWrapper onClick={() => onClick(product)} selected={selected}>
+    <ListItemWrapper onClick={() => onClick(item)} selected={selected}>
       <Flex flexDir="column">
         <Flex alignItems="center">
-          <Text>{product.name}</Text>
-          {product.sold && (
+          <Text>{item.name}</Text>
+          {item.sold && (
             <Badge ml="3" colorScheme="green" fontSize="xs">
               SOLD
             </Badge>
@@ -35,12 +35,12 @@ const ProductItem = ({ product, onClick, selected }: Props) => {
           onClick={(e) =>
             copyToClipboard({
               e,
-              text: product.code,
+              text: item.code,
               toast,
             })
           }
         >
-          {product.code}
+          {item.code}
         </Text>
       </Flex>
       <Flex flexDir="column">

@@ -11,14 +11,9 @@ import {
 import { useFieldArray, useFormContext } from "react-hook-form"
 import PMFormButtons from "./PMFormButtons"
 
-const PaymentMethodForm = ({
-  onClose,
-  comissions = 0,
-}: {
-  onClose?: () => void
-  comissions?: number
-}) => {
+const PaymentMethodForm = ({ comissions = 0 }: { comissions?: number }) => {
   const { control, watch } = useFormContext()
+
   const { append } = useFieldArray({ control, name: "payment_methods" })
   const [subtotal, totalIva, discounts] = watch([
     "subtotal",
@@ -71,7 +66,7 @@ const PaymentMethodForm = ({
           showIf={["method", "Tarjeta de crédito"]}
         />
       </Flex>
-      <PMFormButtons append={append} onClose={onClose} />
+      <PMFormButtons append={append} />
     </MyForm>
   )
 }

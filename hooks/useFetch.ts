@@ -6,10 +6,12 @@ import { env } from "~/env.mjs"
 
 interface Props {
   path: string
-  params: { [key: string]: any }
+  params?: { [key: string]: any }
+  refetchOnMount?: boolean
+  staleTime?: number
 }
 
-function useFetch<T>({ path, params }: Props) {
+function useFetch<T>({ path, params, refetchOnMount, staleTime }: Props) {
   const [searchText, setSearchText] = useState("")
   const PARAMS = paramsGenerator({ ...params, searchText })
   const result = useQuery<T[]>({
@@ -21,6 +23,8 @@ function useFetch<T>({ path, params }: Props) {
       )
       return res?.data?.data
     },
+    refetchOnMount,
+    staleTime,
   })
   return { ...result, setSearchText }
 }

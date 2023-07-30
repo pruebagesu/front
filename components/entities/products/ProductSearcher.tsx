@@ -7,13 +7,17 @@ import { Sale } from "schemas/SaleSchema"
 import SearchForm from "components/ui/forms/SearchForm"
 import List from "components/ui/lists/List"
 import ProductItem from "./ProductItem"
+import useFetch from "hooks/useFetch"
 
 const ProductSearcher = () => {
   const { control, setValue, watch } = useFormContext<Sale>()
   const { onClose } = useModalContext()
   const { append } = useFieldArray({ control, name: "products" })
-  const [searchText, setSearchText] = useState<string>("")
   const [selectedProducts, setSelectedProducts] = useState<ProductFromDB[]>([])
+  const { data, isLoading, setSearchText } = useFetch<ProductFromDB>({
+    path: "products",
+    params: { toSell: true },
+  })
 
   const handleClick = (p: ProductFromDB) => {
     const alreadyIncluded = selectedProducts.some((sp) => sp._id === p._id)
@@ -48,31 +52,23 @@ const ProductSearcher = () => {
         setSearchText={setSearchText}
         placeholder="Buscar por código..."
       />
-      <List<ProductFromDB>
-        path="products"
+      <List
+        items={data}
         filterFunction={(p) => !addedProducts.find((ap) => ap.code === p.code)}
-        urlParams={{ searchText, toSell: true }}
-      >
-        {({ items }) => (
-          <>
-            {items.map((p) => (
-              <ProductItem
-                key={p._id}
-                product={p}
-                onClick={handleClick}
-                selected={selectedProducts?.includes(p)}
-              />
-            ))}
-          </>
-        )}
-      </List>
+        isLoading={isLoading}
+        ListItem={ProductItem}
+        onItemClick={(p) => handleClick(p)}
+        isSelected={(p) => selectedProducts?.some((sp) => sp._id === p?._id)}
+      />
       <Button
         colorScheme="purple"
         isDisabled={selectedProducts.length === 0}
         onClick={handleSelect}
-        mt={4}
       >
         Finalizar selección
+      </Button>
+      <Button colorScheme="gray" onClick={() => onClose()} ml={3}>
+        Cerrar
       </Button>
     </div>
   )

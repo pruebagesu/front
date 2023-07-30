@@ -3,19 +3,19 @@ import ListItemWrapper from "components/ui/lists/ListItemWrapper"
 import { SaleFromDB } from "schemas/SaleSchema"
 
 interface Props {
-  sale: SaleFromDB
+  item: SaleFromDB
   onClick: (sale: SaleFromDB) => void
   selected?: boolean
 }
 
-const SaleItem = ({ sale, onClick, selected }: Props) => {
+const SaleItem = ({ item, onClick, selected }: Props) => {
   return (
-    <ListItemWrapper onClick={() => onClick(sale)} selected={selected}>
+    <ListItemWrapper onClick={() => onClick(item)} selected={selected}>
       <Text>
-        {sale.client.firstname} {sale.client.lastname}
+        {item.client.firstname} {item.client.lastname}
       </Text>
       <Flex flexDir="column" alignItems="flex-end">
-        <Text>$ {sale.total_amount?.toFixed(2) || 0}</Text>
+        <Text>$ {item.total_amount?.toFixed(2) || 0}</Text>
       </Flex>
     </ListItemWrapper>
   )

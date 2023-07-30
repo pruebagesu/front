@@ -1,45 +1,40 @@
 import { Flex, Spinner } from "@chakra-ui/react"
 import NoItemsFound from "./NoItemsFound"
+import { ListProps } from "schemas/UiSchemas"
+import { ListGeneric } from "../../../schemas/UiSchemas"
 
-interface Props<T> {
-  items: T[] | undefined
-  isLoading: Boolean
-  ListItem: ({ product, onClick, selected }: Item<T>) => JSX.Element
-  selectedItem: T | null | undefined
-  onItemClick: (item: T | undefined) => void
-  isSelected: (item: T | undefined) => boolean
-}
-
-interface Item<T> {
-  product: T
-  onClick: (product: T) => void
-  selected?: boolean
-}
-
-function List<T extends { _id?: string }>({
+function List<T>({
   items,
   isLoading,
   ListItem,
+  filterFunction,
   isSelected,
   onItemClick,
-}: Props<T>) {
+  fdr,
+  my = 4,
+}: ListProps<ListGeneric<T>>) {
   if (isLoading) return <Spinner alignSelf="center" mt={20} mb={20} />
-  if (!items) return <NoItemsFound />
+  if (!items || items?.length === 0) return <NoItemsFound />
+
+  let finalItems = items
+  if (typeof filterFunction === "function") {
+    finalItems = items.filter(filterFunction)
+  }
 
   return (
     <Flex
-      flexDirection="column"
+      flexDirection={fdr ? "row" : "column"}
       p={1}
       gap={2}
-      my={4}
-      maxHeight="40vh"
-      overflowY="scroll"
+      my={my}
+      maxHeight={items.length > 5 ? "40vh" : "auto"}
+      overflowY={items.length > 5 ? "scroll" : "auto"}
     >
-      {items.map((item, index) => (
+      {finalItems.map((item, index) => (
         <ListItem
           key={index}
-          product={item}
-          onClick={(item) => onItemClick(item)}
+          item={item}
+          onClick={(item) => onItemClick(item, isSelected(item))}
           selected={isSelected(item)}
         />
       ))}

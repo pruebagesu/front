@@ -26,8 +26,11 @@ const ProductsPanel = () => {
         items={data}
         isLoading={isLoading}
         ListItem={ProductItem}
-        selectedItem={selectedItem}
-        setSelectedItem={setSelectedItem}
+        isSelected={(p) => p?._id === selectedItem?._id}
+        onItemClick={(p) => {
+          const valueToSet = p?._id === selectedItem?._id ? null : p
+          setSelectedItem(valueToSet)
+        }}
       />
 
       <Flex>

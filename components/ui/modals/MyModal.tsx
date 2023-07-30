@@ -4,7 +4,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalCloseButton,
   useDisclosure,
   Button,
 } from "@chakra-ui/react"
@@ -51,9 +50,8 @@ const MyModal = ({
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{title}</ModalHeader>
-          <ModalCloseButton />
+        <ModalContent p={"0.5rem 0.3rem"}>
+          {title && <ModalHeader>{title}</ModalHeader>}
           <ModalBody>
             {isChildrenAFunction ? children({ onClose }) : children}
           </ModalBody>

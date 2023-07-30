@@ -3,19 +3,19 @@ import { copyToClipboard } from "helpers/copyToClipboard"
 import { ClientFromDB } from "schemas/ClientSchema"
 
 interface Props {
-  client: ClientFromDB
+  item: ClientFromDB
   onClick: (client: ClientFromDB) => void
   selected?: boolean
 }
 
-const ClientItem = ({ client, onClick, selected }: Props) => {
-  const noSales = client.sales?.count === 0 || !client.sales?.count
-  const s = client.sales?.count === 1 ? "" : "s"
+const ClientItem = ({ item, onClick, selected }: Props) => {
+  const noSales = item.sales?.count === 0 || !item.sales?.count
+  const s = item.sales?.count === 1 ? "" : "s"
   const toast = useToast()
-  console.log({ client })
+  console.log({ item })
   return (
     <Card
-      key={client._id}
+      key={item._id}
       py={2}
       px={4}
       cursor="pointer"
@@ -29,13 +29,13 @@ const ClientItem = ({ client, onClick, selected }: Props) => {
               color: "#222",
             }
       }
-      onClick={() => onClick(client)}
+      onClick={() => onClick(item)}
       flexDir="row"
       justifyContent="space-between"
     >
       <Flex flexDir="column">
         <Text>
-          {client.firstname} {client.lastname}
+          {item.firstname} {item.lastname}
         </Text>
         <Text
           fontSize="xs"
@@ -45,14 +45,14 @@ const ClientItem = ({ client, onClick, selected }: Props) => {
           onClick={(e) =>
             copyToClipboard({
               e,
-              text: client.document_value,
+              text: item.document_value,
               toast,
             })
           }
         >
-          {client.document_value}{" "}
+          {item.document_value}{" "}
           <Text as="span" fontSize="xs" display="inline" color="gray">
-            ({client.document_type})
+            ({item.document_type})
           </Text>
         </Text>
       </Flex>
@@ -60,13 +60,13 @@ const ClientItem = ({ client, onClick, selected }: Props) => {
         {noSales ? (
           <Text color="red.600">Sin ventas</Text>
         ) : (
-          <Text color="green" title={`${client.sales?.count} venta${s}`}>
-            $ {client.sales?.amount?.toFixed(2)}
+          <Text color="green" title={`${item.sales?.count} venta${s}`}>
+            $ {item.sales?.amount?.toFixed(2)}
           </Text>
         )}
-        {(client?.comissions || 0) > 0 && (
+        {(item?.comissions || 0) > 0 && (
           <Text as="span" fontSize="xs" color="purple.400">
-            ${client?.comissions} en comisiones
+            ${item?.comissions} en comisiones
           </Text>
         )}
       </Flex>

@@ -36,7 +36,7 @@ function PaymentMethodAdder({ fieldName, canRemove }: Props) {
             {canRemove && (
               <MyDeleteIcon<Sale> fieldName="payment_methods" index={index} />
             )}
-            <Text ml={2}>{pm.method}</Text>
+            <Text ml={canRemove ? 2 : 0}>{pm.method}</Text>
           </Flex>
           <Text>${pm.amount}</Text>
         </Flex>

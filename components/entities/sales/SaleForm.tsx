@@ -89,7 +89,7 @@ const SaleForm = ({
           </Heading>
           {!saleId && (
             <MyModal title="Elegir productos" buttonText="Agregar" size="xs">
-              {() => <ProductSearcher />}
+              <ProductSearcher />
             </MyModal>
           )}
         </Flex>
@@ -110,9 +110,7 @@ const SaleForm = ({
               buttonText="Agregar"
               size="xs"
             >
-              {({ onClose }) => (
-                <PaymentMethodForm onClose={onClose} comissions={comissions} />
-              )}
+              <PaymentMethodForm comissions={comissions} />
             </MyModal>
           )}
         </Flex>

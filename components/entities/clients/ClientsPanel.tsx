@@ -1,80 +1,54 @@
-import { Flex, TabPanel } from "@chakra-ui/react"
-import MyModal from "components/ui/modals/MyModal"
-import ClientForm from "./ClientForm"
-import SaleForm from "../sales/SaleForm"
+import { TabPanel } from "@chakra-ui/react"
+
 import { useState } from "react"
 import { ClientFromDB } from "schemas/ClientSchema"
 import SearchForm from "components/ui/forms/SearchForm"
 import ClientItem from "./ClientItem"
 import List from "components/ui/lists/List"
+import useFetch from "hooks/useFetch"
+import MyModal from "components/ui/modals/MyModal"
+import ClientForm from "./ClientForm"
+import SaleForm from "../sales/SaleForm"
 
 const ClientsPanel = () => {
-  const [searchText, setSearchText] = useState("")
-  const [selectedClient, setSelectedClient] = useState<ClientFromDB | null>()
+  const [selectedItem, setSelectedItem] = useState<ClientFromDB | null>()
+  const { data, isLoading, refetch, setSearchText } = useFetch<ClientFromDB>({
+    path: "clients",
+    params: { toSell: false },
+  })
   return (
     <TabPanel p={0}>
       <SearchForm
         setSearchText={setSearchText}
         placeholder="Buscar cliente..."
       />
-      <List<ClientFromDB>
-        path="clients"
-        sortFunction={(a, b) => (a.sales?.amount || 0) - (b.sales?.amount || 0)}
-        urlParams={{ searchText }}
+      <List
+        items={data}
+        isLoading={isLoading}
+        ListItem={ClientItem}
+        isSelected={(c) => c?._id === selectedItem?._id}
+        onItemClick={(c) => {
+          const valueToSet = c?._id === selectedItem?._id ? null : c
+          setSelectedItem(valueToSet)
+        }}
+      />
+      <MyModal
+        title="Nueva venta"
+        colorScheme="green"
+        mr={2}
+        disableButton={!selectedItem}
       >
-        {({ items, refetch }) => (
-          <>
-            <Flex
-              flexDirection="column"
-              p={1}
-              gap={2}
-              my={4}
-              maxHeight="40vh"
-              overflowY="scroll"
-            >
-              {items.map((c) => (
-                <ClientItem
-                  key={c._id}
-                  client={c}
-                  onClick={(c) => {
-                    const valueToSet = c._id === selectedClient?._id ? null : c
-                    setSelectedClient(valueToSet)
-                  }}
-                  selected={c._id === selectedClient?._id}
-                />
-              ))}
-            </Flex>
-            <Flex>
-              <MyModal
-                title={(selectedClient ? "Editar " : "Nuevo ") + "cliente"}
-                mr={2}
-              >
-                {() => (
-                  <ClientForm
-                    clientId={selectedClient?._id}
-                    refetch={refetch}
-                  />
-                )}
-              </MyModal>
-              <MyModal
-                title="Nueva venta"
-                colorScheme="green"
-                disableButton={!selectedClient}
-              >
-                {({ onClose }) => (
-                  <SaleForm
-                    clientId={selectedClient?._id}
-                    comissions={selectedClient?.comissions || 0}
-                    clientSalesCount={selectedClient?.sales?.count || 0}
-                    refetch={refetch}
-                    onClose={onClose}
-                  />
-                )}
-              </MyModal>
-            </Flex>
-          </>
+        {({ onClose }) => (
+          <SaleForm
+            clientId={selectedItem?._id}
+            refetch={refetch}
+            onClose={onClose}
+          />
         )}
-      </List>
+      </MyModal>
+      <MyModal title={(selectedItem ? "Editar " : "Nuevo ") + "cliente"} mr={2}>
+        <ClientForm clientId={selectedItem?._id} refetch={refetch} />
+      </MyModal>
     </TabPanel>
   )
 }

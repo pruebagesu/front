@@ -48,6 +48,12 @@ export interface SaleFromDB extends Sale {
   client: ClientFromDB
   referalDoc: string
 }
+export interface SummarySaleFromDB extends Sale {
+  _id: { day: number; month: number; year: number }
+  sales: number
+  gathered: number
+  count: number
+}
 
 export interface Product extends ProductForState {
   supplier_cost: number
