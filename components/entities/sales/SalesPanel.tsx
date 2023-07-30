@@ -58,7 +58,7 @@ const SalesPanel = () => {
         }}
       />
       <MyModal
-        title=""
+        title="Detalle"
         buttonText="Ver venta"
         colorScheme="blue"
         disableButton={!selectedItem}

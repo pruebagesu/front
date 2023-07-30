@@ -1,4 +1,4 @@
-import { TabPanel } from "@chakra-ui/react"
+import { Flex, TabPanel } from "@chakra-ui/react"
 
 import { useState } from "react"
 import { ClientFromDB } from "schemas/ClientSchema"
@@ -32,23 +32,28 @@ const ClientsPanel = () => {
           setSelectedItem(valueToSet)
         }}
       />
-      <MyModal
-        title="Nueva venta"
-        colorScheme="green"
-        mr={2}
-        disableButton={!selectedItem}
-      >
-        {({ onClose }) => (
-          <SaleForm
-            clientId={selectedItem?._id}
-            refetch={refetch}
-            onClose={onClose}
-          />
-        )}
-      </MyModal>
-      <MyModal title={(selectedItem ? "Editar " : "Nuevo ") + "cliente"} mr={2}>
-        <ClientForm clientId={selectedItem?._id} refetch={refetch} />
-      </MyModal>
+      <Flex>
+        <MyModal
+          title="Nueva venta"
+          colorScheme="green"
+          mr={2}
+          disableButton={!selectedItem}
+        >
+          {({ onClose }) => (
+            <SaleForm
+              clientId={selectedItem?._id}
+              refetch={refetch}
+              onClose={onClose}
+            />
+          )}
+        </MyModal>
+        <MyModal
+          title={(selectedItem ? "Editar " : "Nuevo ") + "cliente"}
+          mr={2}
+        >
+          <ClientForm clientId={selectedItem?._id} refetch={refetch} />
+        </MyModal>
+      </Flex>
     </TabPanel>
   )
 }

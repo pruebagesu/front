@@ -83,7 +83,12 @@ const SaleForm = ({
         <MyInput type="hidden" fieldName="subtotal" label="" valueAsNumber />
         <MyInput type="hidden" fieldName="iva" label="" valueAsNumber />
         <MyInput type="hidden" fieldName="discounts" label="" valueAsNumber />
-        <Flex alignItems="center" justifyContent={"space-between"} mb={3}>
+        <Flex
+          alignItems="center"
+          w="100%"
+          justifyContent="space-between"
+          mb={3}
+        >
           <Heading size="lg" m={0}>
             Productos
           </Heading>
