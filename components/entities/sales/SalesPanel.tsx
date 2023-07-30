@@ -21,7 +21,11 @@ const SalesPanel = () => {
 
   const { data, isLoading } = useFetch<SaleFromDB>({
     path: "sales",
-    params: { toSell: false },
+    params: {
+      toSell: false,
+      month: selectedPeriod.month,
+      year: selectedPeriod.year,
+    },
   })
   const summary = useFetch<SummarySaleFromDB>({
     path: "sales/summary",
