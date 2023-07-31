@@ -13,7 +13,7 @@ const ClientItem = ({ item, onClick, selected }: Props) => {
   const noSales = item.sales?.count === 0 || !item.sales?.count
   const s = item.sales?.count === 1 ? "" : "s"
   const toast = useToast()
-  console.log({ item })
+
   return (
     <ListItemWrapper onClick={() => onClick(item)} selected={selected}>
       <Flex flexDir="column">

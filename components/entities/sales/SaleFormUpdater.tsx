@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { Sale } from "schemas/SaleSchema"
 import productSummary, { defaultProductSummary } from "helpers/productSummary"
 
-const SaleFormUpdater = () => {
+const SaleFormUpdater = ({ client_comissions = 0 }) => {
   const { setValue, watch, getValues } = useFormContext<Sale>()
   const trigger = watch("trigger_update")
 
@@ -17,6 +17,11 @@ const SaleFormUpdater = () => {
     setValue("subtotal", subtotal)
     setValue("totalIva", totalIva)
     setValue("discounts", discounts)
+    setValue("client_comissions", client_comissions)
+    const totalBeforeComissions = subtotal + totalIva - discounts
+    const finalComissions = Math.min(totalBeforeComissions, client_comissions)
+    const total = totalBeforeComissions - finalComissions
+    setValue("total", total)
   }, [trigger])
 
   return <></>

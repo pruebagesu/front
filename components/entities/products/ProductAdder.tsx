@@ -1,26 +1,33 @@
-import { Flex, Text } from "@chakra-ui/react"
+import { Flex, Heading, Text } from "@chakra-ui/react"
 import MyDeleteIcon from "components/ui/icons/MyDeleteIcon"
 import { useFormContext } from "react-hook-form"
 import { ProductForState, Sale } from "schemas/SaleSchema"
 import ProductSubtotal from "./ProductSubtotal"
 import getProductDiscount from "helpers/getProductDiscount"
-// import { useCopyToClipboard } from "hooks/useCopyToClipboard"
+import MyModal from "components/ui/modals/MyModal"
+import ProductSearcher from "./ProductSearcher"
 
-function ProductAdder({ canRemove = true }) {
+function ProductAdder({ saleId = "" }) {
   const { watch } = useFormContext<Sale>()
   const products = watch("products")
-  // const copyToClipboard = useCopyToClipboard({ text: "", title: "" })
-
-  if (!products || products?.length === 0) {
-    return (
-      <Text mb={5} textAlign="center">
-        No se ha agregado ningún producto
-      </Text>
-    )
-  }
 
   return (
     <Flex flexDir="column" alignItems="flex-start">
+      <Flex alignItems="center" w="100%" justifyContent="space-between" mb={3}>
+        <Heading size="lg" m={0}>
+          Productos
+        </Heading>
+        {!saleId && (
+          <MyModal title="Elegir productos" buttonText="Agregar" size="xs">
+            <ProductSearcher />
+          </MyModal>
+        )}
+      </Flex>
+      {(!products || products?.length === 0) && (
+        <Text w="100%" mb={5} textAlign="center">
+          No se ha agregado ningún producto
+        </Text>
+      )}
       {products.map((product: ProductForState, index: number) => (
         <Flex
           key={index}
@@ -30,9 +37,7 @@ function ProductAdder({ canRemove = true }) {
           mb={2}
           width="100%"
         >
-          {canRemove && (
-            <MyDeleteIcon<Sale> fieldName="products" index={index} />
-          )}
+          {!saleId && <MyDeleteIcon<Sale> fieldName="products" index={index} />}
           <Flex flexDir="column" flex={6}>
             <Flex gap={2} mb={-0.5}>
               <Text>{product.name}</Text>

@@ -23,6 +23,7 @@ export interface ListProps<T> {
   onItemClick: (item: T, selected: boolean) => void
   isSelected: (item: T) => boolean
   filterFunction?: (item: T) => boolean
+  title?: string
 
   fdr?: boolean
   my?: number

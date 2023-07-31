@@ -11,7 +11,7 @@ import ClientForm from "./ClientForm"
 import SaleForm from "../sales/SaleForm"
 
 const ClientsPanel = () => {
-  const [selectedItem, setSelectedItem] = useState<ClientFromDB | null>()
+  const [selectedClient, setSelectedClient] = useState<ClientFromDB | null>()
   const { data, isLoading, refetch, setSearchText } = useFetch<ClientFromDB>({
     path: "clients",
     params: { toSell: false },
@@ -26,10 +26,10 @@ const ClientsPanel = () => {
         items={data}
         isLoading={isLoading}
         ListItem={ClientItem}
-        isSelected={(c) => c?._id === selectedItem?._id}
+        isSelected={(c) => c?._id === selectedClient?._id}
         onItemClick={(c) => {
-          const valueToSet = c?._id === selectedItem?._id ? null : c
-          setSelectedItem(valueToSet)
+          const valueToSet = c?._id === selectedClient?._id ? null : c
+          setSelectedClient(valueToSet)
         }}
       />
       <Flex>
@@ -37,21 +37,21 @@ const ClientsPanel = () => {
           title="Nueva venta"
           colorScheme="green"
           mr={2}
-          disableButton={!selectedItem}
+          disableButton={!selectedClient}
         >
           {({ onClose }) => (
             <SaleForm
-              clientId={selectedItem?._id}
+              client={selectedClient}
               refetch={refetch}
               onClose={onClose}
             />
           )}
         </MyModal>
         <MyModal
-          title={(selectedItem ? "Editar " : "Nuevo ") + "cliente"}
+          title={(selectedClient ? "Editar " : "Nuevo ") + "cliente"}
           mr={2}
         >
-          <ClientForm clientId={selectedItem?._id} refetch={refetch} />
+          <ClientForm clientId={selectedClient?._id} refetch={refetch} />
         </MyModal>
       </Flex>
     </TabPanel>

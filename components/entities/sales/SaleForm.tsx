@@ -1,4 +1,4 @@
-import { Flex, Heading, useToast } from "@chakra-ui/react"
+import { useToast } from "@chakra-ui/react"
 import axios, { AxiosResponse } from "axios"
 import { env } from "~/env.mjs"
 import "react-datepicker/dist/react-datepicker.css"
@@ -7,33 +7,23 @@ import { SaleFormProps, Sale, SaleFromDB, saleSchema } from "schemas/SaleSchema"
 import MyForm from "components/ui/forms/MyForm"
 import ProductAdder from "../products/ProductAdder"
 import PaymentMethodAdder from "../payment_methods/PaymentMethodAdder"
-import SaleFormButtons from "./SaleFormButtons"
-import MyModal from "components/ui/modals/MyModal"
-import ProductSearcher from "../products/ProductSearcher"
-import PaymentMethodForm from "../payment_methods/PaymentMethodForm"
 import { ApiResponse } from "schemas/ApiSchema"
 import ProductsSubtotal from "../products/ProductsSubtotal"
 import MyInput from "components/ui/inputs/MyInput"
 import SaleFormUpdater from "./SaleFormUpdater"
+import SubmitButtons from "components/ui/buttons/SubmitButtons"
 
-const SaleForm = ({
-  saleId,
-  clientId,
-  refetch,
-  onClose,
-  comissions,
-  clientSalesCount,
-}: SaleFormProps) => {
+const SaleForm = ({ saleId, client, refetch, onClose }: SaleFormProps) => {
   const toast = useToast()
   const onSubmit = async (data: Sale, reset: any): Promise<void> => {
-    if (!clientId) return
+    if (!client) return
     const PARAMS = !!saleId ? `/${saleId}` : ""
     try {
       await axios<any, AxiosResponse<ApiResponse<SaleFromDB>>>(
         `${env.NEXT_PUBLIC_BACKEND_BASE_URL}/sales${PARAMS}`,
         {
           method: !!saleId ? "PUT" : "POST",
-          data: { ...data, client: clientId, comissions },
+          data: { ...data, client: client._id, comissions: client.comissions },
           withCredentials: true,
         }
       )
@@ -51,9 +41,6 @@ const SaleForm = ({
     if (!saleId) {
       return {
         operation_date: getDateForInput(),
-        subtotal: 0,
-        totalIva: 0,
-        discounts: 0,
         products: [],
         payment_methods: [],
       }
@@ -76,64 +63,31 @@ const SaleForm = ({
       <MyForm
         onSubmit={onSubmit}
         onError={onError}
-        zodSchema={saleSchema}
+        zodSchema={saleSchema} // El zodSchema define qué campos vamos a tener en el formulario
         defaultValues={setDefaultValues}
       >
-        <SaleFormUpdater />
-        <MyInput type="hidden" fieldName="subtotal" label="" valueAsNumber />
-        <MyInput type="hidden" fieldName="iva" label="" valueAsNumber />
-        <MyInput type="hidden" fieldName="discounts" label="" valueAsNumber />
-        <Flex
-          alignItems="center"
-          w="100%"
-          justifyContent="space-between"
-          mb={3}
-        >
-          <Heading size="lg" m={0}>
-            Productos
-          </Heading>
-          {!saleId && (
-            <MyModal title="Elegir productos" buttonText="Agregar" size="xs">
-              <ProductSearcher />
-            </MyModal>
-          )}
-        </Flex>
-        <ProductAdder canRemove={!saleId} />
-        <ProductsSubtotal comissions={comissions} />
-        <Flex
-          alignItems="center"
-          justifyContent={"space-between"}
-          mt="8"
-          mb={3}
-        >
-          <Heading size="lg" m={0}>
-            Forma de pago
-          </Heading>
-          {!saleId && (
-            <MyModal
-              title="Elegir medio de pago"
-              buttonText="Agregar"
-              size="xs"
-            >
-              <PaymentMethodForm comissions={comissions} />
-            </MyModal>
-          )}
-        </Flex>
-        <PaymentMethodAdder
-          fieldName="payment_methods"
-          canRemove={!saleId}
-          comissions={comissions}
-        />
+        <SaleFormUpdater client_comissions={client?.comissions} />
+        <ProductAdder saleId={saleId} />
+        <ProductsSubtotal />
+        <PaymentMethodAdder fieldName="payment_methods" saleId={saleId} />
         <MyInput<Sale>
           fieldName="referalDoc"
           label="Referido por"
           placeholder="Documento referente..."
-          showIf={clientSalesCount === 0}
+          showIf={client?.sales?.count === 0}
         />
-        <SaleFormButtons
-          saleId={saleId}
-          onClose={onClose}
-          comissions={comissions}
+        <SubmitButtons<Sale>
+          isDisabled={(formValues) => {
+            console.log({ formValues })
+            const { payment_methods, total } = formValues
+            const payments =
+              payment_methods
+                ?.map((p) => p.amount)
+                .reduce((a, b) => a + b, 0) || 0
+            return (
+              !payments || !total || total.toFixed(2) !== payments.toFixed(2)
+            )
+          }}
         />
       </MyForm>
     </>

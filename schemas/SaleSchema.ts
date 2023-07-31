@@ -28,15 +28,28 @@ export const salePaymentMethodSchema = z.object({
   time_value: z.number().nullish(),
 })
 
-export const saleSchema = z.object({
-  subtotal: z.number(),
-  totalIva: z.number(),
-  discounts: z.number(),
-  trigger_update: z.number(),
-  referalDoc: z.string().nullish(),
-  products: z.array(saleProductSchema),
-  payment_methods: z.array(salePaymentMethodSchema),
-})
+export const saleSchema = z
+  .object({
+    subtotal: z.number(),
+    totalIva: z.number(),
+    discounts: z.number(),
+    total: z.number(),
+    client_comissions: z.number(),
+    trigger_update: z.number(),
+    referalDoc: z.string().nullish(),
+    products: z
+      .array(saleProductSchema)
+      .min(1, "Debe haber al menos un producto"),
+    payment_methods: z.array(salePaymentMethodSchema),
+  })
+  .refine((data) => {
+    const { payment_methods, total } = data
+    const payments =
+      payment_methods?.map((p) => p.amount).reduce((a, b) => a + b, 0) || 0
+    const isInvalid =
+      !payments || !total || total.toFixed(2) !== payments.toFixed(2)
+    return !isInvalid
+  })
 
 export type Sale = z.infer<typeof saleSchema>
 export type PaymentMethod = z.infer<typeof salePaymentMethodSchema>
@@ -66,9 +79,7 @@ export interface Product extends ProductForState {
 
 export interface SaleFormProps {
   saleId?: string
-  clientId?: string
-  clientSalesCount?: number
-  comissions?: number
+  client: ClientFromDB | null | undefined
   refetch?: () => void
   onClose?: () => void
 }

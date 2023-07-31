@@ -1,7 +1,8 @@
-import { Flex, Spinner } from "@chakra-ui/react"
+import { Flex, Heading } from "@chakra-ui/react"
 import NoItemsFound from "./NoItemsFound"
 import { ListProps } from "schemas/UiSchemas"
 import { ListGeneric } from "../../../schemas/UiSchemas"
+import MySpinner from "../spinners/MySpinner"
 
 function List<T>({
   items,
@@ -10,15 +11,11 @@ function List<T>({
   filterFunction,
   isSelected,
   onItemClick,
+  title,
   fdr,
   my = 4,
 }: ListProps<ListGeneric<T>>) {
-  if (isLoading)
-    return (
-      <Flex width="100%" className="aic jcc">
-        <Spinner alignSelf="center" mt={20} mb={20} />
-      </Flex>
-    )
+  if (isLoading) return <MySpinner />
   if (!items || items?.length === 0) return <NoItemsFound />
 
   let finalItems = items
@@ -35,6 +32,7 @@ function List<T>({
       maxHeight={items.length > 5 ? "40vh" : "auto"}
       overflowY={items.length > 5 ? "scroll" : "auto"}
     >
+      {title && <Heading>{title}</Heading>}
       {finalItems.map((item, index) => (
         <ListItem
           key={index}
