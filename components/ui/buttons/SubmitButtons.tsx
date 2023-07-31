@@ -11,7 +11,6 @@ interface Props<T extends FieldValues> {
   submitText?: string
   shouldClose?: boolean
   shouldSubmit?: boolean
-  isDisabled?: (formValues: T) => boolean
 }
 
 const SubmitButtons = <T extends FieldValues>({
@@ -19,23 +18,23 @@ const SubmitButtons = <T extends FieldValues>({
   editing = false,
   submitText,
   shouldClose = false,
-  isDisabled,
 }: Props<T>) => {
   const { getValues, setError, formState } = useFormContext<T>()
   const { onClose } = useModalContext()
+  const formValues = getValues()
 
   let finalText = !!editing ? "Guardar cambios" : "Crear"
   if (submitText) {
     finalText = submitText
   }
 
-  const formValues = getValues()
   const handleClick = () => {
     if (!!onClick) {
       onClick({ formValues, setError })
       shouldClose && onClose()
     }
   }
+
   return (
     <ButtonGroup>
       <Button
@@ -43,7 +42,7 @@ const SubmitButtons = <T extends FieldValues>({
         type={!onClick ? "submit" : "button"}
         mb={2}
         onClick={handleClick}
-        isDisabled={isDisabled ? isDisabled(formValues) : false}
+        isDisabled={!formState.isValid}
       >
         {formState.isSubmitting ? <Spinner /> : finalText}
       </Button>

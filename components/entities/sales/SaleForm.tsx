@@ -76,19 +76,7 @@ const SaleForm = ({ saleId, client, refetch, onClose }: SaleFormProps) => {
           placeholder="Documento referente..."
           showIf={client?.sales?.count === 0}
         />
-        <SubmitButtons<Sale>
-          isDisabled={(formValues) => {
-            console.log({ formValues })
-            const { payment_methods, total } = formValues
-            const payments =
-              payment_methods
-                ?.map((p) => p.amount)
-                .reduce((a, b) => a + b, 0) || 0
-            return (
-              !payments || !total || total.toFixed(2) !== payments.toFixed(2)
-            )
-          }}
-        />
+        <SubmitButtons<Sale> />
       </MyForm>
     </>
   )

@@ -4,8 +4,8 @@ import { Sale } from "schemas/SaleSchema"
 import productSummary, { defaultProductSummary } from "helpers/productSummary"
 
 const SaleFormUpdater = ({ client_comissions = 0 }) => {
-  const { setValue, watch, getValues } = useFormContext<Sale>()
-  const trigger = watch("trigger_update")
+  const { setValue, watch, getValues, trigger } = useFormContext<Sale>()
+  const trigger_update = watch("trigger_update")
 
   useEffect(() => {
     const products = getValues("products")
@@ -22,7 +22,8 @@ const SaleFormUpdater = ({ client_comissions = 0 }) => {
     const finalComissions = Math.min(totalBeforeComissions, client_comissions)
     const total = totalBeforeComissions - finalComissions
     setValue("total", total)
-  }, [trigger])
+    trigger() // Para que corra validaciones de error en todos los campos
+  }, [trigger_update])
 
   return <></>
 }

@@ -33,23 +33,31 @@ export const saleSchema = z
     subtotal: z.number(),
     totalIva: z.number(),
     discounts: z.number(),
-    total: z.number(),
+    total: z.number().gt(0, "El total debe ser mayor a 0"),
     client_comissions: z.number(),
     trigger_update: z.number(),
     referalDoc: z.string().nullish(),
     products: z
       .array(saleProductSchema)
       .min(1, "Debe haber al menos un producto"),
-    payment_methods: z.array(salePaymentMethodSchema),
+    payment_methods: z
+      .array(salePaymentMethodSchema)
+      .min(1, "Debe haber al menos un método de pago"),
   })
-  .refine((data) => {
-    const { payment_methods, total } = data
-    const payments =
-      payment_methods?.map((p) => p.amount).reduce((a, b) => a + b, 0) || 0
-    const isInvalid =
-      !payments || !total || total.toFixed(2) !== payments.toFixed(2)
-    return !isInvalid
-  })
+  .refine(
+    (data) => {
+      const { payment_methods, total } = data
+      const payments =
+        payment_methods?.map((p) => p.amount).reduce((a, b) => a + b, 0) || 0
+      const isValid =
+        !!payments && !!total && total.toFixed(2) === payments.toFixed(2)
+      return isValid
+    },
+    {
+      message: "Los pagos no coinciden con el total",
+      path: ["payment_methods"],
+    }
+  )
 
 export type Sale = z.infer<typeof saleSchema>
 export type PaymentMethod = z.infer<typeof salePaymentMethodSchema>
