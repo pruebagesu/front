@@ -11,6 +11,7 @@ interface Props<T extends FieldValues> {
   submitText?: string
   shouldClose?: boolean
   shouldSubmit?: boolean
+  mb?: number
 }
 
 const SubmitButtons = <T extends FieldValues>({
@@ -18,6 +19,7 @@ const SubmitButtons = <T extends FieldValues>({
   editing = false,
   submitText,
   shouldClose = false,
+  mb = 0,
 }: Props<T>) => {
   const { getValues, setError, formState } = useFormContext<T>()
   const { onClose } = useModalContext()
@@ -40,7 +42,7 @@ const SubmitButtons = <T extends FieldValues>({
       <Button
         colorScheme="purple"
         type={!onClick ? "submit" : "button"}
-        mb={2}
+        mb={mb}
         onClick={handleClick}
         isDisabled={!formState.isValid}
       >

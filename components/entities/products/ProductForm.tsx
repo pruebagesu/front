@@ -15,9 +15,9 @@ import { ProductForState } from "schemas/SaleSchema"
 import { useQueryClient } from "@tanstack/react-query"
 
 interface Props {
-  productId: string | undefined
+  productId?: string | undefined
   submitText?: string
-  queryKey: string[]
+  queryKey?: string[]
 }
 
 const ProductForm = ({ productId, submitText, queryKey }: Props) => {

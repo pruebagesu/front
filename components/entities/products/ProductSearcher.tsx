@@ -7,7 +7,6 @@ import { Sale } from "schemas/SaleSchema"
 import SearchForm from "components/ui/forms/SearchForm"
 import List from "components/ui/lists/List"
 import ProductItem from "./ProductItem"
-import useFetch from "hooks/useFetch"
 import paramsGenerator from "helpers/paramsGenerator"
 
 const ProductSearcher = () => {

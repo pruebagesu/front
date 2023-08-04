@@ -20,10 +20,20 @@ const ProductsPanel = () => {
 
   return (
     <TabPanel p={0}>
-      <SearchForm
-        placeholder="Buscar producto..."
-        setSearchText={setSearchText}
-      />
+      <Flex>
+        <SearchForm
+          placeholder="Buscar producto..."
+          setSearchText={setSearchText}
+        />
+        <MyModal
+          title="Nuevo producto"
+          icon="fas fa-plus"
+          colorScheme="green"
+          ml={3}
+        >
+          <ProductForm />
+        </MyModal>
+      </Flex>
 
       <List
         path={fetchPath}
@@ -38,8 +48,9 @@ const ProductsPanel = () => {
 
       <Flex>
         <MyModal
-          title={(selectedProduct ? "Editar " : "Nuevo ") + "producto"}
+          title="Editar producto"
           mr={2}
+          disableButton={!selectedProduct}
         >
           <ProductForm productId={selectedProduct?._id} queryKey={queryKey} />
         </MyModal>

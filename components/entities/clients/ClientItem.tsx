@@ -1,6 +1,6 @@
-import { Flex, Text, useToast } from "@chakra-ui/react"
+import { Flex, Text } from "@chakra-ui/react"
 import ListItemWrapper from "components/ui/lists/ListItemWrapper"
-import { copyToClipboard } from "helpers/copyToClipboard"
+import CopyableText from "components/ui/text/CopiableText"
 import { ClientFromDB } from "schemas/ClientSchema"
 
 interface Props {
@@ -12,7 +12,6 @@ interface Props {
 const ClientItem = ({ item, onClick, selected }: Props) => {
   const noSales = item.sales?.count === 0 || !item.sales?.count
   const s = item.sales?.count === 1 ? "" : "s"
-  const toast = useToast()
 
   return (
     <ListItemWrapper onClick={() => onClick(item)} selected={selected}>
@@ -20,24 +19,10 @@ const ClientItem = ({ item, onClick, selected }: Props) => {
         <Text>
           {item.firstname} {item.lastname}
         </Text>
-        <Text
-          fontSize="xs"
-          display="inline"
-          color="blue.400"
-          _hover={{ color: "green.400" }}
-          onClick={(e) =>
-            copyToClipboard({
-              e,
-              text: item.document_value,
-              toast,
-            })
-          }
-        >
-          {item.document_value}{" "}
-          <Text as="span" fontSize="xs" display="inline" color="gray">
-            ({item.document_type})
-          </Text>
-        </Text>
+        <CopyableText
+          text={item.document_value}
+          aclaration={item.document_type}
+        />
       </Flex>
       <Flex flexDir="column" alignItems="flex-end">
         {noSales ? (

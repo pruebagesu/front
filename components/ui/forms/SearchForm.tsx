@@ -11,19 +11,25 @@ import { useState } from "react"
 interface Props {
   setSearchText: (value: string) => void
   placeholder?: string
+  mt?: number
 }
 
-const SearchForm = ({ setSearchText, placeholder = "Buscar..." }: Props) => {
+const SearchForm = ({
+  setSearchText,
+  placeholder = "Buscar...",
+  mt = 0,
+}: Props) => {
   const [value, setValue] = useState("")
   return (
     <form
+      className="w100p"
       onSubmit={(e) => {
         e.preventDefault()
         e.stopPropagation()
         setSearchText(value)
       }}
     >
-      <Flex mt={5} gap={3} pl={1} mb={2}>
+      <Flex mt={mt} gap={3} pl={1} mb={2}>
         <InputGroup>
           <Input
             placeholder={placeholder}

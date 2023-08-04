@@ -9,6 +9,8 @@ import MyModal from "components/ui/modals/MyModal"
 import ClientForm from "./ClientForm"
 import SaleForm from "../sales/SaleForm"
 import paramsGenerator from "helpers/paramsGenerator"
+import SaleItem from "../sales/SaleItem"
+import { SaleFromDB } from "schemas/SaleSchema"
 
 const ClientsPanel = () => {
   const [selectedClient, setSelectedClient] = useState<ClientFromDB | null>()
@@ -20,10 +22,20 @@ const ClientsPanel = () => {
   const queryKey = [fetchPath, PARAMS]
   return (
     <TabPanel p={0}>
-      <SearchForm
-        setSearchText={setSearchText}
-        placeholder="Buscar cliente..."
-      />
+      <Flex>
+        <SearchForm
+          setSearchText={setSearchText}
+          placeholder="Buscar cliente..."
+        />
+        <MyModal
+          title="Nuevo cliente"
+          icon="fas fa-plus"
+          colorScheme="green"
+          ml={3}
+        >
+          <ClientForm />
+        </MyModal>
+      </Flex>
       <List
         path={fetchPath}
         params={PARAMS}
@@ -35,6 +47,47 @@ const ClientsPanel = () => {
         }}
       />
       <Flex>
+        <MyModal
+          tabs={[
+            {
+              icon: "fas fa-dollar",
+              text: "Ventas",
+              component: (
+                <List<SaleFromDB>
+                  path={`sales/client/${selectedClient?._id}`}
+                  title="Últimas ventas"
+                  ListItem={({ item, onClick, selected }) => (
+                    <SaleItem
+                      item={item}
+                      onClick={onClick}
+                      selected={selected}
+                      fromClient
+                    />
+                  )}
+                  my={0}
+                />
+              ),
+            },
+            {
+              icon: "fas fa-edit",
+              text: "Editar",
+              component: (
+                <ClientForm
+                  clientId={selectedClient?._id}
+                  queryKey={queryKey}
+                />
+              ),
+            },
+            {
+              icon: "fas fa-paperclip",
+              text: "Adjuntos",
+              component: <div>Documentos adjuntos</div>,
+            },
+          ]}
+          buttonText="Ver cliente"
+          mr={2}
+          disableButton={!selectedClient}
+        />
         <MyModal
           title="Nueva venta"
           colorScheme="green"
@@ -48,24 +101,6 @@ const ClientsPanel = () => {
               onClose={onClose}
             />
           )}
-        </MyModal>
-        <MyModal
-          tabs={[
-            {
-              icon: "fas fa-edit",
-              text: "Editar",
-              component: (
-                <ClientForm
-                  clientId={selectedClient?._id}
-                  queryKey={queryKey}
-                />
-              ),
-            },
-          ]}
-          title="Nuevo cliente"
-          mr={2}
-        >
-          <ClientForm queryKey={queryKey} />
         </MyModal>
       </Flex>
     </TabPanel>

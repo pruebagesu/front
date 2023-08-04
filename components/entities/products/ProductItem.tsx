@@ -1,9 +1,9 @@
-import { Badge, Flex, Text, useToast } from "@chakra-ui/react"
+import { Badge, Flex, Text } from "@chakra-ui/react"
 import calcProductPrice from "helpers/calcProductPrice"
 import { ProductFromDB } from "schemas/ProductSchema"
 import getProductDiscount from "../../../helpers/getProductDiscount"
 import ListItemWrapper from "components/ui/lists/ListItemWrapper"
-import { copyToClipboard } from "helpers/copyToClipboard"
+import CopyableText from "components/ui/text/CopiableText"
 
 interface Props {
   item: ProductFromDB
@@ -13,7 +13,6 @@ interface Props {
 
 const ProductItem = ({ item, onClick, selected }: Props) => {
   const productPrice = calcProductPrice(item, true)
-  const toast = useToast()
   const { discount, formattedDiscount } = getProductDiscount(item)
 
   return (
@@ -27,21 +26,7 @@ const ProductItem = ({ item, onClick, selected }: Props) => {
             </Badge>
           )}
         </Flex>
-        <Text
-          fontSize="xs"
-          display="inline"
-          color="blue.400"
-          _hover={{ color: "green.400" }}
-          onClick={(e) =>
-            copyToClipboard({
-              e,
-              text: item.code,
-              toast,
-            })
-          }
-        >
-          {item.code}
-        </Text>
+        <CopyableText text={item.code} />
       </Flex>
       <Flex flexDir="column" alignItems="flex-end">
         <Text>$ {productPrice || 0}</Text>

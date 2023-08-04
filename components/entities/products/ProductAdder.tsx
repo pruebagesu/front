@@ -6,6 +6,7 @@ import ProductSubtotal from "./ProductSubtotal"
 import getProductDiscount from "helpers/getProductDiscount"
 import MyModal from "components/ui/modals/MyModal"
 import ProductSearcher from "./ProductSearcher"
+import CopyableText from "components/ui/text/CopiableText"
 
 function ProductAdder({ saleId = "" }) {
   const { watch } = useFormContext<Sale>()
@@ -43,22 +44,7 @@ function ProductAdder({ saleId = "" }) {
               <Text>{product.name}</Text>
             </Flex>
             <Flex>
-              <Text
-                fontSize="xs"
-                color="blue.400"
-                mr="0.5rem"
-                _hover={{ color: "green.400", cursor: "pointer" }}
-                // onClick={(e) =>
-                //   copyToClipboard({
-                //     event: e,
-                //     text: product.code,
-                //     toast,
-                //     title: "Código copiado",
-                //   })
-                // }
-              >
-                {product.code}
-              </Text>
+              <CopyableText text={product.code} />
               {getProductDiscount(product).discount > 0 && (
                 <Text fontSize="xs" color="red.400">
                   {getProductDiscount(product).formattedDiscount}

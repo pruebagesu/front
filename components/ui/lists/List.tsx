@@ -29,6 +29,8 @@ function List<T>({
     finalItems = items.filter(filterFunction)
   }
 
+  const isClickable = onItemClick && isSelected
+
   return (
     <Flex
       flexDirection={fdr ? "row" : "column"}
@@ -38,13 +40,13 @@ function List<T>({
       maxHeight={items.length > 5 ? "40vh" : "auto"}
       overflowY={items.length > 5 ? "scroll" : "auto"}
     >
-      {title && <Heading>{title}</Heading>}
+      {title && <Heading size="md">{title}</Heading>}
       {finalItems.map((item, index) => (
         <ListItem
           key={index}
           item={item}
-          onClick={(item) => onItemClick(item, isSelected(item))}
-          selected={isSelected(item)}
+          onClick={(item) => isClickable && onItemClick(item, isSelected(item))}
+          selected={isClickable && isSelected(item)}
         />
       ))}
     </Flex>
