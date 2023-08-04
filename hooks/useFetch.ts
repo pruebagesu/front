@@ -1,24 +1,21 @@
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
-import paramsGenerator from "helpers/paramsGenerator"
-import { useState } from "react"
 import { env } from "~/env.mjs"
 
 interface Props {
   path: string
-  params?: { [key: string]: any }
+  params?: string
   refetchOnMount?: boolean
   staleTime?: number
+  searchText?: string
 }
 
 function useFetch<T>({ path, params, refetchOnMount, staleTime }: Props) {
-  const [searchText, setSearchText] = useState("")
-  const PARAMS = paramsGenerator({ ...params, searchText })
   const result = useQuery<T[]>({
-    queryKey: [path, PARAMS],
+    queryKey: [path, params],
     queryFn: async () => {
       const res = await axios.get<{ data: T[] }>(
-        `${env.NEXT_PUBLIC_BACKEND_BASE_URL}/${path}${PARAMS}`,
+        `${env.NEXT_PUBLIC_BACKEND_BASE_URL}/${path}${params}`,
         { withCredentials: true }
       )
       return res?.data?.data
@@ -26,7 +23,7 @@ function useFetch<T>({ path, params, refetchOnMount, staleTime }: Props) {
     refetchOnMount,
     staleTime,
   })
-  return { ...result, setSearchText }
+  return { ...result }
 }
 
 export default useFetch

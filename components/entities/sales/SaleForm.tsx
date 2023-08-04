@@ -12,9 +12,12 @@ import ProductsSubtotal from "../products/ProductsSubtotal"
 import MyInput from "components/ui/inputs/MyInput"
 import SaleFormUpdater from "./SaleFormUpdater"
 import SubmitButtons from "components/ui/buttons/SubmitButtons"
+import { useQueryClient } from "@tanstack/react-query"
 
-const SaleForm = ({ saleId, client, refetch, onClose }: SaleFormProps) => {
+const SaleForm = ({ saleId, client, queryKey, onClose }: SaleFormProps) => {
   const toast = useToast()
+
+  const query = useQueryClient()
   const onSubmit = async (data: Sale, reset: any): Promise<void> => {
     if (!client) return
     const PARAMS = !!saleId ? `/${saleId}` : ""
@@ -27,7 +30,8 @@ const SaleForm = ({ saleId, client, refetch, onClose }: SaleFormProps) => {
           withCredentials: true,
         }
       )
-      refetch && refetch()
+
+      queryKey && query.invalidateQueries(queryKey)
       reset()
       onClose && onClose()
     } catch (error: any) {

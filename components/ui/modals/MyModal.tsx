@@ -7,6 +7,8 @@ import {
   Button,
   Tabs,
   TabList,
+  TabPanels,
+  TabPanel,
 } from "@chakra-ui/react"
 import React, { ReactElement, ReactNode } from "react"
 import { Sizes } from "schemas/UiSchemas"
@@ -23,7 +25,7 @@ interface Props {
     | ((props: { onClose: () => void }) => ReactElement)
   colorScheme?: string
   mr?: number
-  tabs?: { icon: string; text: string }[]
+  tabs?: { icon: string; text: string; component: ReactNode }[]
 }
 
 const MyModal = ({
@@ -71,7 +73,14 @@ const MyModal = ({
               </TabList>
             )}
             <ModalBody p={"0.75rem 1rem"}>
-              {isChildrenAFunction ? children({ onClose }) : children}
+              <TabPanels>
+                <TabPanel>
+                  {isChildrenAFunction ? children({ onClose }) : children}
+                </TabPanel>
+                {tabs.map((t) => (
+                  <TabPanel>{t.component}</TabPanel>
+                ))}
+              </TabPanels>
             </ModalBody>
           </ModalContent>
         </Tabs>

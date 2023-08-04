@@ -61,6 +61,7 @@ const Login: NextPage = () => {
           zodSchema={LoginSchema}
           onSubmit={onSubmit}
           onError={onError}
+          isModal={false}
           defaultValues={{ email: "ignaciogesualdo@gmail.com", code: "123456" }}
         >
           <MyInput fieldName="email" label="Email" />

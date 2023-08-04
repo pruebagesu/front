@@ -87,7 +87,7 @@ export interface Product extends ProductForState {
 
 export interface SaleFormProps {
   saleId?: string
-  client: ClientFromDB | null | undefined
-  refetch?: () => void
+  client?: ClientFromDB | null | undefined
+  queryKey?: string[]
   onClose?: () => void
 }

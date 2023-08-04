@@ -4,6 +4,7 @@ interface Props {
 
 const paramsGenerator = (params: Props) => {
   let keys = Object.keys(params)
+  console.log({ keys })
   if (keys.length === 0) return ""
 
   let finalParams = "?"
@@ -11,10 +12,11 @@ const paramsGenerator = (params: Props) => {
   for (let index = 0; index < keys.length; index++) {
     const key = keys[index] as string
     const value = params[key]
-    const isLastOne = index === keys.length - 1
+    const isFirstOne = index === 0
+    console.log({ isFirstOne, key })
 
-    if (!!value) {
-      finalParams += `${key}=${value}${!isLastOne ? "&" : ""}`
+    if (value !== undefined && value !== null && value !== "") {
+      finalParams += `${!isFirstOne ? "&" : ""}${key}=${value}`
     }
   }
 

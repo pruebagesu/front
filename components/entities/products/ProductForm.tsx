@@ -12,16 +12,19 @@ import {
 import { env } from "~/env.mjs"
 import SubmitButtons from "components/ui/buttons/SubmitButtons"
 import { ProductForState } from "schemas/SaleSchema"
+import { useQueryClient } from "@tanstack/react-query"
 
 interface Props {
   productId: string | undefined
   submitText?: string
-  refetch?: () => void
+  queryKey: string[]
 }
 
-const ProductForm = ({ productId, refetch, submitText }: Props) => {
+const ProductForm = ({ productId, submitText, queryKey }: Props) => {
   const { onClose } = useModalContext()
   const toast = useToast()
+
+  const query = useQueryClient()
 
   const onSubmit = async (state: Product, reset: () => void) => {
     const editing = !!productId && !submitText
@@ -37,7 +40,7 @@ const ProductForm = ({ productId, refetch, submitText }: Props) => {
       )
       reset()
       onClose()
-      refetch && refetch()
+      await query.invalidateQueries(queryKey)
     } catch (error: any) {
       console.log({ error })
       toast({ title: error.response.data.message, status: "warning" })

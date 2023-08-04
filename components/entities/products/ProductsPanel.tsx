@@ -6,14 +6,17 @@ import ProductItem from "./ProductItem"
 import { ProductFromDB } from "schemas/ProductSchema"
 import ProductForm from "./ProductForm"
 import MyModal from "components/ui/modals/MyModal"
-import useFetch from "hooks/useFetch"
+import paramsGenerator from "helpers/paramsGenerator"
 
 const ProductsPanel = () => {
-  const [selectedItem, setSelectedItem] = useState<ProductFromDB | null>()
-  const { data, isLoading, refetch, setSearchText } = useFetch<ProductFromDB>({
-    path: "products",
-    params: { toSell: false },
-  })
+  const [selectedProduct, setSelectedProduct] = useState<ProductFromDB | null>()
+  const [searchText, setSearchText] = useState("")
+
+  const params = { toSell: false, searchText }
+  const fetchPath = "products"
+  const PARAMS = paramsGenerator({ ...params, searchText })
+  const queryKey = [fetchPath, PARAMS]
+  console.log({ PARAMS })
 
   return (
     <TabPanel p={0}>
@@ -23,33 +26,33 @@ const ProductsPanel = () => {
       />
 
       <List
-        items={data}
-        isLoading={isLoading}
+        path={fetchPath}
+        params={PARAMS}
         ListItem={ProductItem}
-        isSelected={(p) => p?._id === selectedItem?._id}
+        isSelected={(p) => p?._id === selectedProduct?._id}
         onItemClick={(p) => {
-          const valueToSet = p?._id === selectedItem?._id ? null : p
-          setSelectedItem(valueToSet)
+          const valueToSet = p?._id === selectedProduct?._id ? null : p
+          setSelectedProduct(valueToSet)
         }}
       />
 
       <Flex>
         <MyModal
-          title={(selectedItem ? "Editar " : "Nuevo ") + "producto"}
+          title={(selectedProduct ? "Editar " : "Nuevo ") + "producto"}
           mr={2}
         >
-          <ProductForm productId={selectedItem?._id} refetch={refetch} />
+          <ProductForm productId={selectedProduct?._id} queryKey={queryKey} />
         </MyModal>
         <MyModal
-          title={`Replicar ${selectedItem?.name || ""}`}
+          title={`Replicar ${selectedProduct?.name || ""}`}
           mr={2}
           colorScheme="green"
-          disableButton={!selectedItem}
+          disableButton={!selectedProduct}
         >
           <ProductForm
-            productId={selectedItem?._id}
-            refetch={refetch}
+            productId={selectedProduct?._id}
             submitText="Replicar"
+            queryKey={queryKey}
           />
         </MyModal>
       </Flex>

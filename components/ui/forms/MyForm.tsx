@@ -14,6 +14,7 @@ interface Props<T> {
   onError: (data: FieldValues) => void
   children: ReactNode
   defaultValues?: DefaultValues<FieldValues>
+  isModal?: boolean
 }
 
 const MyForm = <T,>({
@@ -22,13 +23,14 @@ const MyForm = <T,>({
   onSubmit,
   onError,
   children,
+  isModal = true,
 }: Props<T>) => {
   type EntityType = z.infer<typeof zodSchema>
   const methods = useForm<EntityType>({
     resolver: zodResolver(zodSchema),
     defaultValues,
   })
-  const { onClose } = useModalContext()
+  const { onClose } = isModal ? useModalContext() : { onClose: () => {} }
 
   if (methods.formState.isLoading) return <MySpinner />
 

@@ -1,20 +1,26 @@
 import { Flex, Heading } from "@chakra-ui/react"
 import NoItemsFound from "./NoItemsFound"
 import { ListProps } from "schemas/UiSchemas"
-import { ListGeneric } from "../../../schemas/UiSchemas"
 import MySpinner from "../spinners/MySpinner"
+import useFetch from "hooks/useFetch"
 
 function List<T>({
-  items,
-  isLoading,
   ListItem,
   filterFunction,
   isSelected,
   onItemClick,
+  path,
+  params = "", // sino viaja "undefined" y el useFetch no funciona
   title,
   fdr,
   my = 4,
-}: ListProps<ListGeneric<T>>) {
+}: ListProps<T>) {
+  const { data: items, isLoading } = useFetch<T>({
+    path,
+    params,
+    refetchOnMount: true,
+    staleTime: 0,
+  })
   if (isLoading) return <MySpinner />
   if (!items || items?.length === 0) return <NoItemsFound />
 

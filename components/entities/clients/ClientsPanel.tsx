@@ -5,17 +5,19 @@ import { ClientFromDB } from "schemas/ClientSchema"
 import SearchForm from "components/ui/forms/SearchForm"
 import ClientItem from "./ClientItem"
 import List from "components/ui/lists/List"
-import useFetch from "hooks/useFetch"
 import MyModal from "components/ui/modals/MyModal"
 import ClientForm from "./ClientForm"
 import SaleForm from "../sales/SaleForm"
+import paramsGenerator from "helpers/paramsGenerator"
 
 const ClientsPanel = () => {
   const [selectedClient, setSelectedClient] = useState<ClientFromDB | null>()
-  const { data, isLoading, refetch, setSearchText } = useFetch<ClientFromDB>({
-    path: "clients",
-    params: { toSell: false },
-  })
+  const [searchText, setSearchText] = useState("")
+
+  const params = { toSell: false }
+  const fetchPath = "clients"
+  const PARAMS = paramsGenerator({ ...params, searchText })
+  const queryKey = [fetchPath, PARAMS]
   return (
     <TabPanel p={0}>
       <SearchForm
@@ -23,8 +25,8 @@ const ClientsPanel = () => {
         placeholder="Buscar cliente..."
       />
       <List
-        items={data}
-        isLoading={isLoading}
+        path={fetchPath}
+        params={PARAMS}
         ListItem={ClientItem}
         isSelected={(c) => c?._id === selectedClient?._id}
         onItemClick={(c) => {
@@ -42,16 +44,28 @@ const ClientsPanel = () => {
           {({ onClose }) => (
             <SaleForm
               client={selectedClient}
-              refetch={refetch}
+              queryKey={["sales"]}
               onClose={onClose}
             />
           )}
         </MyModal>
         <MyModal
-          title={(selectedClient ? "Editar " : "Nuevo ") + "cliente"}
+          tabs={[
+            {
+              icon: "fas fa-edit",
+              text: "Editar",
+              component: (
+                <ClientForm
+                  clientId={selectedClient?._id}
+                  queryKey={queryKey}
+                />
+              ),
+            },
+          ]}
+          title="Nuevo cliente"
           mr={2}
         >
-          <ClientForm clientId={selectedClient?._id} refetch={refetch} />
+          <ClientForm queryKey={queryKey} />
         </MyModal>
       </Flex>
     </TabPanel>

@@ -43,10 +43,10 @@ const ProductItem = ({ item, onClick, selected }: Props) => {
           {item.code}
         </Text>
       </Flex>
-      <Flex flexDir="column">
+      <Flex flexDir="column" alignItems="flex-end">
         <Text>$ {productPrice || 0}</Text>
         {discount > 0 && (
-          <Text alignSelf="flex-end" color="red.400" fontSize="sm">
+          <Text color="red.400" fontSize="xs">
             {formattedDiscount}
           </Text>
         )}
