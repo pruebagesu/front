@@ -32,9 +32,10 @@ const ProductSearcher = () => {
   const handleSelect = () => {
     for (const product of selectedProducts) {
       const unit_price = calcProductPrice(product)
-      const { code, name, iva, discount } = product
+      const { code, name, iva, discount, _id } = product
 
       append({
+        _id,
         code,
         name,
         iva,

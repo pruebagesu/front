@@ -7,6 +7,8 @@ import { ProductFromDB } from "schemas/ProductSchema"
 import ProductForm from "./ProductForm"
 import MyModal from "components/ui/modals/MyModal"
 import paramsGenerator from "helpers/paramsGenerator"
+import SaleItem from "../sales/SaleItem"
+import { SaleFromDB } from "schemas/SaleSchema"
 
 const ProductsPanel = () => {
   const [selectedProduct, setSelectedProduct] = useState<ProductFromDB | null>()
@@ -48,12 +50,34 @@ const ProductsPanel = () => {
 
       <Flex>
         <MyModal
-          title="Editar producto"
+          tabs={[
+            {
+              icon: "fas fa-dollar",
+              text: "Venta",
+              component: (
+                <List<SaleFromDB>
+                  path={`sales/product/${selectedProduct?._id}`}
+                  ListItem={({ item, onClick, selected }) => (
+                    <SaleItem
+                      item={item}
+                      onClick={onClick}
+                      selected={selected}
+                    />
+                  )}
+                  my={0}
+                />
+              ),
+            },
+            {
+              icon: "fas fa-paperclip",
+              text: "Adjuntos",
+              component: <div>Documentos adjuntos</div>,
+            },
+          ]}
+          buttonText="Ver producto"
           mr={2}
           disableButton={!selectedProduct}
-        >
-          <ProductForm productId={selectedProduct?._id} queryKey={queryKey} />
-        </MyModal>
+        />
         <MyModal
           title={`Replicar ${selectedProduct?.name || ""}`}
           mr={2}

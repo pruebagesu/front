@@ -14,11 +14,12 @@ export const PAYMENT_METHOD_TYPES = [
 export const TIME_UNITS = z.enum(["Días", "Meses", "Años"])
 
 export const saleProductSchema = z.object({
+  _id: z.string().optional(),
   code: z.string(),
   name: z.string().optional(),
   iva: z.number(),
   unit_price: z.number(),
-  discount: z.number().optional(),
+  discount: z.number(),
 })
 
 export const salePaymentMethodSchema = z.object({
