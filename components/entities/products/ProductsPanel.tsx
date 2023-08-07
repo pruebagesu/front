@@ -9,6 +9,7 @@ import MyModal from "components/ui/modals/MyModal"
 import paramsGenerator from "helpers/paramsGenerator"
 import SaleItem from "../sales/SaleItem"
 import { SaleFromDB } from "schemas/SaleSchema"
+import Attachments from "../attachments/Attachments"
 
 const ProductsPanel = () => {
   const [selectedProduct, setSelectedProduct] = useState<ProductFromDB | null>()
@@ -18,7 +19,6 @@ const ProductsPanel = () => {
   const fetchPath = "products"
   const PARAMS = paramsGenerator({ ...params, searchText })
   const queryKey = [fetchPath, PARAMS]
-  console.log({ PARAMS })
 
   return (
     <TabPanel p={0}>
@@ -71,7 +71,9 @@ const ProductsPanel = () => {
             {
               icon: "fas fa-paperclip",
               text: "Adjuntos",
-              component: <div>Documentos adjuntos</div>,
+              component: (
+                <Attachments entity="product" entityId={selectedProduct?._id} />
+              ),
             },
           ]}
           buttonText="Ver producto"

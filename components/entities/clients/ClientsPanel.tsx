@@ -11,6 +11,7 @@ import SaleForm from "../sales/SaleForm"
 import paramsGenerator from "helpers/paramsGenerator"
 import SaleItem from "../sales/SaleItem"
 import { SaleFromDB } from "schemas/SaleSchema"
+import Attachments from "../attachments/Attachments"
 
 const ClientsPanel = () => {
   const [selectedClient, setSelectedClient] = useState<ClientFromDB | null>()
@@ -81,7 +82,9 @@ const ClientsPanel = () => {
             {
               icon: "fas fa-paperclip",
               text: "Adjuntos",
-              component: <div>Documentos adjuntos</div>,
+              component: (
+                <Attachments entity="client" entityId={selectedClient?._id} />
+              ),
             },
           ]}
           buttonText="Ver cliente"

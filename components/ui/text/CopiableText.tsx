@@ -3,10 +3,14 @@ import { copyToClipboard } from "helpers/copyToClipboard"
 
 const CopyableText = ({
   text,
+  copyableText = text,
   aclaration,
+  message,
 }: {
   text: string
+  copyableText?: string
   aclaration?: string
+  message?: string
 }) => {
   const toast = useToast()
   return (
@@ -18,8 +22,9 @@ const CopyableText = ({
       onClick={(e) =>
         copyToClipboard({
           e,
-          text,
+          text: copyableText,
           toast,
+          message,
         })
       }
     >

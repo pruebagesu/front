@@ -63,8 +63,6 @@ const PaymentMethodForm = () => {
         shouldClose
         shouldSubmit={false}
         onClick={({ formValues, setError }) => {
-          console.log({ formValues })
-          // return
           const { time_value, time_unit, ...cleanedPM } = formValues
           const pmToAppend =
             formValues.method === "Tarjeta de crédito" ? formValues : cleanedPM

@@ -8,6 +8,7 @@ import SaleItem from "./SaleItem"
 import SaleSummaryItem from "./SaleSummaryItem"
 import { SummarySaleFromDB } from "schemas/SaleSchema"
 import paramsGenerator from "helpers/paramsGenerator"
+import Attachments from "../attachments/Attachments"
 
 type Period = { month: number | undefined; year: number | undefined }
 
@@ -54,15 +55,24 @@ const SalesPanel = () => {
         }}
       />
       <MyModal
-        title="Detalle"
         buttonText="Ver venta"
         colorScheme="blue"
         disableButton={!selectedSale}
-      >
-        {({ onClose }) => (
-          <SaleForm saleId={selectedSale?._id} onClose={onClose} />
-        )}
-      </MyModal>
+        tabs={[
+          {
+            icon: "fas fa-dollar",
+            text: "Detalle",
+            component: <SaleForm saleId={selectedSale?._id} />,
+          },
+          {
+            icon: "fas fa-paperclip",
+            text: "Adjuntos",
+            component: (
+              <Attachments entity="product" entityId={selectedSale?._id} />
+            ),
+          },
+        ]}
+      />
     </TabPanel>
   )
 }

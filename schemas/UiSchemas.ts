@@ -18,7 +18,7 @@ export interface MyInputProps<T> {
 
 export interface ListProps<T> {
   ListItem: ({ item, onClick, selected }: ListItem<T>) => JSX.Element
-  onItemClick?: (item: T, selected: boolean) => void
+  onItemClick?: (item: T, selected: boolean, refetch: () => void) => void
   isSelected?: (item: T) => boolean
   filterFunction?: (item: T) => boolean
   path: string

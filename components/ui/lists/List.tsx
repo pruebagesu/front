@@ -15,14 +15,18 @@ function List<T>({
   fdr,
   my = 4,
 }: ListProps<T>) {
-  const { data: items, isLoading } = useFetch<T>({
+  const {
+    data: items,
+    isLoading,
+    refetch,
+  } = useFetch<T>({
     path,
     params,
     refetchOnMount: true,
     staleTime: 0,
   })
   if (isLoading) return <MySpinner />
-  if (!items || items?.length === 0) return <NoItemsFound />
+  if (!items || items?.length === 0) return <NoItemsFound title={title} />
 
   let finalItems = items
   if (typeof filterFunction === "function") {
@@ -45,7 +49,9 @@ function List<T>({
         <ListItem
           key={index}
           item={item}
-          onClick={(item) => isClickable && onItemClick(item, isSelected(item))}
+          onClick={(item) =>
+            isClickable && onItemClick(item, isSelected(item), refetch)
+          }
           selected={isClickable && isSelected(item)}
         />
       ))}

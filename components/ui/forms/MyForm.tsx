@@ -15,6 +15,7 @@ interface Props<T> {
   children: ReactNode
   defaultValues?: DefaultValues<FieldValues>
   isModal?: boolean
+  closeModal?: boolean
 }
 
 const MyForm = <T,>({
@@ -24,6 +25,7 @@ const MyForm = <T,>({
   onError,
   children,
   isModal = true,
+  closeModal = true,
 }: Props<T>) => {
   type EntityType = z.infer<typeof zodSchema>
   const methods = useForm<EntityType>({
@@ -40,7 +42,7 @@ const MyForm = <T,>({
         onSubmit={methods.handleSubmit(
           async (data) => {
             await onSubmit(data, methods.reset) // Si o si el await para el loading
-            onClose()
+            closeModal && onClose()
           },
           (errors) => {
             onError(errors)
