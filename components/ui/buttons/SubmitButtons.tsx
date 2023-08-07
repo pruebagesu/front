@@ -1,4 +1,10 @@
-import { Button, ButtonGroup, Spinner, useModalContext } from "@chakra-ui/react"
+import {
+  Button,
+  ButtonGroup,
+  Spinner,
+  useModalContext,
+  useToast,
+} from "@chakra-ui/react"
 import { FieldValues, useFormContext, UseFormSetError } from "react-hook-form"
 type ClickParams<T extends FieldValues> = {
   formValues: T
@@ -9,9 +15,12 @@ interface Props<T extends FieldValues> {
   onClick?: ({ formValues, setError }: ClickParams<T>) => void
   editing?: boolean
   submitText?: string
+  onSuccessMessage?: string
   shouldClose?: boolean
   shouldSubmit?: boolean
-  mb?: number
+  justSubmit?: boolean
+  mt?: number | string
+  mb?: number | string
 }
 
 const SubmitButtons = <T extends FieldValues>({
@@ -19,11 +28,15 @@ const SubmitButtons = <T extends FieldValues>({
   editing = false,
   submitText,
   shouldClose = false,
+  justSubmit = false,
+  onSuccessMessage,
+  mt = 0,
   mb = 0,
 }: Props<T>) => {
   const { getValues, setError, formState } = useFormContext<T>()
   const { onClose } = useModalContext()
   const formValues = getValues()
+  const toast = useToast()
 
   let finalText = !!editing ? "Guardar cambios" : "Crear"
   if (submitText) {
@@ -34,11 +47,12 @@ const SubmitButtons = <T extends FieldValues>({
     if (!!onClick) {
       onClick({ formValues, setError })
       shouldClose && onClose()
+      onSuccessMessage && toast({ title: onSuccessMessage, status: "success" })
     }
   }
 
   return (
-    <ButtonGroup>
+    <ButtonGroup mt={mt}>
       <Button
         colorScheme="purple"
         type={!onClick ? "submit" : "button"}
@@ -48,9 +62,11 @@ const SubmitButtons = <T extends FieldValues>({
       >
         {formState.isSubmitting ? <Spinner /> : finalText}
       </Button>
-      <Button colorScheme="gray" onClick={() => onClose()} ml={3}>
-        Cerrar
-      </Button>
+      {!justSubmit && (
+        <Button colorScheme="gray" onClick={() => onClose()} ml={3}>
+          Cerrar
+        </Button>
+      )}
     </ButtonGroup>
   )
 }
