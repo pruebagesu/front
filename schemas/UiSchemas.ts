@@ -17,12 +17,13 @@ export interface MyInputProps<T> {
 }
 
 export interface ListProps<T> {
-  items: T[] | undefined
-  isLoading: Boolean
   ListItem: ({ item, onClick, selected }: ListItem<T>) => JSX.Element
-  onItemClick: (item: T, selected: boolean) => void
-  isSelected: (item: T) => boolean
+  onItemClick?: (item: T, selected: boolean, refetch: () => void) => void
+  isSelected?: (item: T) => boolean
   filterFunction?: (item: T) => boolean
+  path: string
+  params?: string
+  title?: string
 
   fdr?: boolean
   my?: number

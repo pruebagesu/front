@@ -7,33 +7,39 @@ import {
   Button,
   Tabs,
   TabList,
+  TabPanels,
+  TabPanel,
 } from "@chakra-ui/react"
 import React, { ReactElement, ReactNode } from "react"
 import { Sizes } from "schemas/UiSchemas"
 import MyTab from "../tabs/MyTab"
 
 interface Props {
-  title: string
+  title?: string
+  icon?: string
   buttonText?: string
   disableButton?: boolean
   size?: Sizes
-  children:
+  children?:
     | ReactElement<any, any>
     | ReactNode
     | ((props: { onClose: () => void }) => ReactElement)
   colorScheme?: string
   mr?: number
-  tabs?: { icon: string; text: string }[]
+  ml?: number
+  tabs?: { icon: string; text: string; component: ReactNode }[]
 }
 
 const MyModal = ({
   title,
   children,
   buttonText = title,
+  icon,
   disableButton,
   size = "md",
   colorScheme = "blue",
   mr = 0,
+  ml = 0,
   tabs = [],
 }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -47,11 +53,13 @@ const MyModal = ({
       <Button
         size={size}
         onClick={onOpen}
+        title={buttonText || title}
         colorScheme={colorScheme}
         mr={mr}
+        ml={ml}
         isDisabled={disableButton}
       >
-        {buttonText}
+        {icon ? <i className={icon} /> : <span>{buttonText}</span>}
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <Tabs variant="enclosed" colorScheme="blue" isLazy>
@@ -71,7 +79,16 @@ const MyModal = ({
               </TabList>
             )}
             <ModalBody p={"0.75rem 1rem"}>
-              {isChildrenAFunction ? children({ onClose }) : children}
+              <TabPanels>
+                {children && (
+                  <TabPanel p={0}>
+                    {isChildrenAFunction ? children({ onClose }) : children}
+                  </TabPanel>
+                )}
+                {tabs.map((t) => (
+                  <TabPanel p={0}>{t.component}</TabPanel>
+                ))}
+              </TabPanels>
             </ModalBody>
           </ModalContent>
         </Tabs>

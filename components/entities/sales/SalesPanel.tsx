@@ -3,37 +3,34 @@ import MyModal from "components/ui/modals/MyModal"
 import { useState } from "react"
 import { SaleFromDB } from "schemas/SaleSchema"
 import SaleForm from "./SaleForm"
-// import SalesSummary from "./SalesSummary"
 import List from "components/ui/lists/List"
 import SaleItem from "./SaleItem"
-import useFetch from "hooks/useFetch"
 import SaleSummaryItem from "./SaleSummaryItem"
 import { SummarySaleFromDB } from "schemas/SaleSchema"
+import paramsGenerator from "helpers/paramsGenerator"
+import Attachments from "../attachments/Attachments"
 
 type Period = { month: number | undefined; year: number | undefined }
 
 const SalesPanel = () => {
-  const [selectedItem, setSelectedItem] = useState<SaleFromDB | null>()
+  const [selectedSale, setSelectedSale] = useState<SaleFromDB | null>()
   const [selectedPeriod, setSelectedPeriod] = useState<Period>({
     month: undefined,
     year: undefined,
   })
 
-  const { data, isLoading } = useFetch<SaleFromDB>({
-    path: "sales",
-    params: { toSell: false },
-  })
-  const summary = useFetch<SummarySaleFromDB>({
-    path: "sales/summary",
-    refetchOnMount: true,
-    staleTime: 0,
-  })
+  const params = {
+    toSell: false,
+    month: selectedPeriod.month,
+    year: selectedPeriod.year,
+  }
+  const fetchPath = "sales"
+  const PARAMS = paramsGenerator({ ...params })
 
   return (
     <TabPanel p={0}>
-      <List
-        items={summary.data}
-        isLoading={summary.isLoading}
+      <List<SummarySaleFromDB>
+        path="sales/summary"
         ListItem={SaleSummaryItem}
         isSelected={(p) =>
           p?._id.month === selectedPeriod?.month &&
@@ -47,26 +44,35 @@ const SalesPanel = () => {
         fdr
         my={1}
       />
-      <List
-        items={data}
-        isLoading={isLoading}
+      <List<SaleFromDB>
+        path={fetchPath}
+        params={PARAMS}
         ListItem={SaleItem}
-        isSelected={(s) => s?._id === selectedItem?._id}
+        isSelected={(s) => s?._id === selectedSale?._id}
         onItemClick={(s) => {
-          const valueToSet = s?._id === selectedItem?._id ? null : s
-          setSelectedItem(valueToSet)
+          const valueToSet = s?._id === selectedSale?._id ? null : s
+          setSelectedSale(valueToSet)
         }}
       />
       <MyModal
-        title="Detalle"
         buttonText="Ver venta"
         colorScheme="blue"
-        disableButton={!selectedItem}
-      >
-        {({ onClose }) => (
-          <SaleForm saleId={selectedItem?._id} onClose={onClose} />
-        )}
-      </MyModal>
+        disableButton={!selectedSale}
+        tabs={[
+          {
+            icon: "fas fa-dollar",
+            text: "Detalle",
+            component: <SaleForm saleId={selectedSale?._id} />,
+          },
+          {
+            icon: "fas fa-paperclip",
+            text: "Adjuntos",
+            component: (
+              <Attachments entity="product" entityId={selectedSale?._id} />
+            ),
+          },
+        ]}
+      />
     </TabPanel>
   )
 }

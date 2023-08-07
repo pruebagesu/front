@@ -12,11 +12,13 @@ import type {
 } from "schemas/ClientSchema"
 import { ClientSchema, DOC_TYPES } from "schemas/ClientSchema"
 import { env } from "~/env.mjs"
-import ClientButtons from "./ClientButtons"
+import SubmitButtons from "components/ui/buttons/SubmitButtons"
+import { useQueryClient } from "@tanstack/react-query"
 
-const ClientForm = ({ clientId, refetch }: ClientFormProps) => {
+const ClientForm = ({ clientId, queryKey }: ClientFormProps) => {
   const { onClose } = useModalContext()
   const toast = useToast()
+  const query = useQueryClient()
   const onSubmit = async (state: Client, reset: () => void) => {
     const PARAMS = !!clientId ? `/${clientId}` : ""
 
@@ -31,7 +33,7 @@ const ClientForm = ({ clientId, refetch }: ClientFormProps) => {
       )
       reset()
       onClose()
-      refetch && refetch()
+      queryKey && query.invalidateQueries(queryKey)
     } catch (error: any) {
       console.log({ error })
       toast({ title: error.response.data.message, status: "warning" })
@@ -79,7 +81,10 @@ const ClientForm = ({ clientId, refetch }: ClientFormProps) => {
         />
         <MyInput fieldName="document_value" label="Documento" mb={0} />
       </Flex>
-      <ClientButtons editing={!!clientId} />
+      <SubmitButtons<Client>
+        submitText={!!clientId ? "Guardar cambios" : "Crear"}
+        shouldClose
+      />
     </MyForm>
   )
 }

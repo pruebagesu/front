@@ -1,5 +1,6 @@
-import { Card, Flex, Text, useToast } from "@chakra-ui/react"
-import { copyToClipboard } from "helpers/copyToClipboard"
+import { Flex, Text } from "@chakra-ui/react"
+import ListItemWrapper from "components/ui/lists/ListItemWrapper"
+import CopyableText from "components/ui/text/CopiableText"
 import { ClientFromDB } from "schemas/ClientSchema"
 
 interface Props {
@@ -11,50 +12,17 @@ interface Props {
 const ClientItem = ({ item, onClick, selected }: Props) => {
   const noSales = item.sales?.count === 0 || !item.sales?.count
   const s = item.sales?.count === 1 ? "" : "s"
-  const toast = useToast()
-  console.log({ item })
+
   return (
-    <Card
-      key={item._id}
-      py={2}
-      px={4}
-      cursor="pointer"
-      bg={selected ? "gray.100" : "white"}
-      color="black"
-      _hover={
-        selected
-          ? {}
-          : {
-              backgroundColor: "gray.100",
-              color: "#222",
-            }
-      }
-      onClick={() => onClick(item)}
-      flexDir="row"
-      justifyContent="space-between"
-    >
+    <ListItemWrapper onClick={() => onClick(item)} selected={selected}>
       <Flex flexDir="column">
         <Text>
           {item.firstname} {item.lastname}
         </Text>
-        <Text
-          fontSize="xs"
-          display="inline"
-          color="blue.400"
-          _hover={{ color: "green.400" }}
-          onClick={(e) =>
-            copyToClipboard({
-              e,
-              text: item.document_value,
-              toast,
-            })
-          }
-        >
-          {item.document_value}{" "}
-          <Text as="span" fontSize="xs" display="inline" color="gray">
-            ({item.document_type})
-          </Text>
-        </Text>
+        <CopyableText
+          text={item.document_value}
+          aclaration={item.document_type}
+        />
       </Flex>
       <Flex flexDir="column" alignItems="flex-end">
         {noSales ? (
@@ -70,7 +38,7 @@ const ClientItem = ({ item, onClick, selected }: Props) => {
           </Text>
         )}
       </Flex>
-    </Card>
+    </ListItemWrapper>
   )
 }
 

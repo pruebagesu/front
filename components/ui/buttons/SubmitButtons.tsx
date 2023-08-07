@@ -1,25 +1,57 @@
-import { Button, Spinner } from "@chakra-ui/react"
-import { FieldValues, useFormContext } from "react-hook-form"
+import { Button, ButtonGroup, Spinner, useModalContext } from "@chakra-ui/react"
+import { FieldValues, useFormContext, UseFormSetError } from "react-hook-form"
+type ClickParams<T extends FieldValues> = {
+  formValues: T
+  setError: UseFormSetError<T>
+}
 
-interface Props {
-  editing: boolean
+interface Props<T extends FieldValues> {
+  onClick?: ({ formValues, setError }: ClickParams<T>) => void
+  editing?: boolean
   submitText?: string
+  shouldClose?: boolean
+  shouldSubmit?: boolean
+  mb?: number
 }
 
 const SubmitButtons = <T extends FieldValues>({
-  editing,
+  onClick,
+  editing = false,
   submitText,
-}: Props) => {
-  const { formState } = useFormContext<T>()
+  shouldClose = false,
+  mb = 0,
+}: Props<T>) => {
+  const { getValues, setError, formState } = useFormContext<T>()
+  const { onClose } = useModalContext()
+  const formValues = getValues()
 
   let finalText = !!editing ? "Guardar cambios" : "Crear"
   if (submitText) {
     finalText = submitText
   }
+
+  const handleClick = () => {
+    if (!!onClick) {
+      onClick({ formValues, setError })
+      shouldClose && onClose()
+    }
+  }
+
   return (
-    <Button colorScheme="purple" type="submit" mb={2}>
-      {formState.isSubmitting ? <Spinner /> : finalText}
-    </Button>
+    <ButtonGroup>
+      <Button
+        colorScheme="purple"
+        type={!onClick ? "submit" : "button"}
+        mb={mb}
+        onClick={handleClick}
+        isDisabled={!formState.isValid}
+      >
+        {formState.isSubmitting ? <Spinner /> : finalText}
+      </Button>
+      <Button colorScheme="gray" onClick={() => onClose()} ml={3}>
+        Cerrar
+      </Button>
+    </ButtonGroup>
   )
 }
 

@@ -2,19 +2,17 @@ import { useFormContext } from "react-hook-form"
 import { Divider, Flex, Heading, Text } from "@chakra-ui/react"
 import { Sale } from "schemas/SaleSchema"
 
-const ProductsSubtotal = ({ comissions = 0 }) => {
+const ProductsSubtotal = () => {
   const { watch } = useFormContext<Sale>()
-  const [subtotal, totalIva, discounts] = watch([
+  const [subtotal, totalIva, discounts, total, client_comissions] = watch([
     "subtotal",
     "totalIva",
     "discounts",
+    "total",
+    "client_comissions",
   ])
 
   if (!subtotal) return <></>
-
-  const totalBeforeComissions = subtotal + totalIva - discounts
-  const finalComissions = Math.min(totalBeforeComissions, comissions)
-  const total = totalBeforeComissions - finalComissions
 
   return (
     <Flex flexDir="column" mt={3}>
@@ -37,11 +35,11 @@ const ProductsSubtotal = ({ comissions = 0 }) => {
           </Text>
         </Flex>
       )}
-      {comissions > 0 && (
+      {client_comissions > 0 && (
         <Flex justifyContent="space-between">
           <Text>Descuentos por comisiones</Text>
           <Text textAlign="end" color="green.400">
-            -${comissions.toFixed(2)}
+            -${client_comissions.toFixed(2)}
           </Text>
         </Flex>
       )}

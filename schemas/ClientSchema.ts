@@ -64,5 +64,5 @@ export interface ClientListProps {
 }
 export interface ClientFormProps {
   clientId?: string
-  refetch?: () => void
+  queryKey?: string[]
 }

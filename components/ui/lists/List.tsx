@@ -1,25 +1,39 @@
-import { Flex, Spinner } from "@chakra-ui/react"
+import { Flex, Heading } from "@chakra-ui/react"
 import NoItemsFound from "./NoItemsFound"
 import { ListProps } from "schemas/UiSchemas"
-import { ListGeneric } from "../../../schemas/UiSchemas"
+import MySpinner from "../spinners/MySpinner"
+import useFetch from "hooks/useFetch"
 
 function List<T>({
-  items,
-  isLoading,
   ListItem,
   filterFunction,
   isSelected,
   onItemClick,
+  path,
+  params = "", // sino viaja "undefined" y el useFetch no funciona
+  title,
   fdr,
   my = 4,
-}: ListProps<ListGeneric<T>>) {
-  if (isLoading) return <Spinner alignSelf="center" mt={20} mb={20} />
-  if (!items || items?.length === 0) return <NoItemsFound />
+}: ListProps<T>) {
+  const {
+    data: items,
+    isLoading,
+    refetch,
+  } = useFetch<T>({
+    path,
+    params,
+    refetchOnMount: true,
+    staleTime: 0,
+  })
+  if (isLoading) return <MySpinner />
+  if (!items || items?.length === 0) return <NoItemsFound title={title} />
 
   let finalItems = items
   if (typeof filterFunction === "function") {
     finalItems = items.filter(filterFunction)
   }
+
+  const isClickable = onItemClick && isSelected
 
   return (
     <Flex
@@ -30,12 +44,15 @@ function List<T>({
       maxHeight={items.length > 5 ? "40vh" : "auto"}
       overflowY={items.length > 5 ? "scroll" : "auto"}
     >
+      {title && <Heading size="md">{title}</Heading>}
       {finalItems.map((item, index) => (
         <ListItem
           key={index}
           item={item}
-          onClick={(item) => onItemClick(item, isSelected(item))}
-          selected={isSelected(item)}
+          onClick={(item) =>
+            isClickable && onItemClick(item, isSelected(item), refetch)
+          }
+          selected={isClickable && isSelected(item)}
         />
       ))}
     </Flex>

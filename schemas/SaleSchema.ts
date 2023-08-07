@@ -14,11 +14,12 @@ export const PAYMENT_METHOD_TYPES = [
 export const TIME_UNITS = z.enum(["Días", "Meses", "Años"])
 
 export const saleProductSchema = z.object({
+  _id: z.string().optional(),
   code: z.string(),
   name: z.string().optional(),
   iva: z.number(),
   unit_price: z.number(),
-  discount: z.number().optional(),
+  discount: z.number(),
 })
 
 export const salePaymentMethodSchema = z.object({
@@ -28,15 +29,36 @@ export const salePaymentMethodSchema = z.object({
   time_value: z.number().nullish(),
 })
 
-export const saleSchema = z.object({
-  subtotal: z.number(),
-  totalIva: z.number(),
-  discounts: z.number(),
-  trigger_update: z.number(),
-  referalDoc: z.string().nullish(),
-  products: z.array(saleProductSchema),
-  payment_methods: z.array(salePaymentMethodSchema),
-})
+export const saleSchema = z
+  .object({
+    subtotal: z.number(),
+    totalIva: z.number(),
+    discounts: z.number(),
+    total: z.number().gt(0, "El total debe ser mayor a 0"),
+    client_comissions: z.number(),
+    trigger_update: z.number(),
+    referalDoc: z.string().nullish(),
+    products: z
+      .array(saleProductSchema)
+      .min(1, "Debe haber al menos un producto"),
+    payment_methods: z
+      .array(salePaymentMethodSchema)
+      .min(1, "Debe haber al menos un método de pago"),
+  })
+  .refine(
+    (data) => {
+      const { payment_methods, total } = data
+      const payments =
+        payment_methods?.map((p) => p.amount).reduce((a, b) => a + b, 0) || 0
+      const isValid =
+        !!payments && !!total && total.toFixed(2) === payments.toFixed(2)
+      return isValid
+    },
+    {
+      message: "Los pagos no coinciden con el total",
+      path: ["payment_methods"],
+    }
+  )
 
 export type Sale = z.infer<typeof saleSchema>
 export type PaymentMethod = z.infer<typeof salePaymentMethodSchema>
@@ -66,9 +88,7 @@ export interface Product extends ProductForState {
 
 export interface SaleFormProps {
   saleId?: string
-  clientId?: string
-  clientSalesCount?: number
-  comissions?: number
-  refetch?: () => void
+  client?: ClientFromDB | null | undefined
+  queryKey?: string[]
   onClose?: () => void
 }

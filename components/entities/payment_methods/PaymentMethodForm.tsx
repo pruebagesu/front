@@ -9,24 +9,16 @@ import {
   salePaymentMethodSchema,
 } from "schemas/SaleSchema"
 import { useFieldArray, useFormContext } from "react-hook-form"
-import PMFormButtons from "./PMFormButtons"
+import SubmitButtons from "components/ui/buttons/SubmitButtons"
 
-const PaymentMethodForm = ({ comissions = 0 }: { comissions?: number }) => {
+const PaymentMethodForm = () => {
   const { control, watch } = useFormContext()
 
   const { append } = useFieldArray({ control, name: "payment_methods" })
-  const [subtotal, totalIva, discounts] = watch([
-    "subtotal",
-    "totalIva",
-    "discounts",
-  ])
+  const total = watch("total")
   const paymentMethods = (watch("payment_methods") as PaymentMethod[]) || []
 
   const totalPM = paymentMethods?.reduce((acc, curr) => acc + curr.amount, 0)
-
-  const totalBeforeComissions = subtotal + totalIva - discounts
-  const finalComissions = Math.min(totalBeforeComissions, comissions)
-  const total = totalBeforeComissions - finalComissions
 
   return (
     <MyForm<PaymentMethod>
@@ -66,7 +58,21 @@ const PaymentMethodForm = ({ comissions = 0 }: { comissions?: number }) => {
           showIf={["method", "Tarjeta de crédito"]}
         />
       </Flex>
-      <PMFormButtons append={append} />
+      <SubmitButtons<PaymentMethod>
+        submitText="Agregar"
+        shouldClose
+        shouldSubmit={false}
+        onClick={({ formValues, setError }) => {
+          const { time_value, time_unit, ...cleanedPM } = formValues
+          const pmToAppend =
+            formValues.method === "Tarjeta de crédito" ? formValues : cleanedPM
+          if (cleanedPM.amount <= 0) {
+            setError("amount", { message: "El valor debe ser mayor a 0" })
+            return
+          }
+          append && append(pmToAppend)
+        }}
+      />
     </MyForm>
   )
 }
