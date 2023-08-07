@@ -16,6 +16,7 @@ export const defaultProduct: ProductForState = {
   code: "",
   name: "",
   iva: 0,
+  discount: 0,
   unit_price: 0,
 }
 
