@@ -9,6 +9,7 @@ import List from "components/ui/lists/List"
 import AttachmentItem from "./AttachmentItem"
 import { useQueryClient } from "@tanstack/react-query"
 import SubmitButtons from "components/ui/buttons/SubmitButtons"
+import MyInput from "components/ui/inputs/MyInput"
 
 interface AttachmentsProps {
   entity: "product" | "client" | "sale"
@@ -20,7 +21,8 @@ const Attachments = ({ entity, entityId }: AttachmentsProps) => {
   const query = useQueryClient()
   const queryKey = `attachments/${entity}/${entityId}`
   const onSubmit = async (state: Attachment, reset: () => void) => {
-    if (state.file.length === 0) {
+    console.log({ file: state.file })
+    if (!state.file["0"]) {
       toast({
         title: "Debe seleccionar un archivo",
         status: "warning",
@@ -30,6 +32,7 @@ const Attachments = ({ entity, entityId }: AttachmentsProps) => {
     }
     const formData = new FormData()
     formData.append("image", state.file[0])
+    formData.append("description", state.description)
     try {
       await axios<any, AxiosResponse<ApiResponse<any>>>(
         `${env.NEXT_PUBLIC_BACKEND_BASE_URL}/attachments/${entity}/${entityId}`,
@@ -50,15 +53,22 @@ const Attachments = ({ entity, entityId }: AttachmentsProps) => {
   return (
     <Flex flexDir="column">
       <Heading size="md" mb="2">
-        Nuevo archivo
+        Adjuntar nuevo archivo
       </Heading>
       <MyForm
         zodSchema={AttachmentSchema}
-        onSubmit={onSubmit}
+        onSubmit={onSubmit} // Si no ponemos nada, es "" y pasa la validación de ser String
         onError={() => console.log("Error")}
         closeModal={false}
       >
         <MyFileInput />
+        <MyInput<Attachment>
+          fieldName="description"
+          placeholder="Descripción del adjunto..."
+          label="Descripción"
+          mb={0}
+          mt={4}
+        />
         <SubmitButtons
           submitText="Adjuntar"
           justSubmit
@@ -71,14 +81,6 @@ const Attachments = ({ entity, entityId }: AttachmentsProps) => {
         path={queryKey}
         ListItem={AttachmentItem}
         title={"Archivos adjuntos"}
-        onItemClick={async (a, _, refetch) => {
-          await axios.delete(
-            `${env.NEXT_PUBLIC_BACKEND_BASE_URL}/attachments/${a._id}`,
-            { withCredentials: true }
-          )
-          refetch()
-        }}
-        isSelected={() => false}
       />
     </Flex>
   )

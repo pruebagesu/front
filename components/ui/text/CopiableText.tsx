@@ -6,17 +6,26 @@ const CopyableText = ({
   copyableText = text,
   aclaration,
   message,
+  fs = "xs",
+  mt = 0,
+  mb = 0,
 }: {
   text: string
   copyableText?: string
   aclaration?: string
   message?: string
+  fs?: string
+  mt?: number
+  mb?: number
 }) => {
   const toast = useToast()
   return (
     <Text
-      fontSize="xs"
+      fontSize={fs}
+      mt={mt}
+      mb={mb}
       display="inline"
+      width="fit-content"
       color="blue.400"
       _hover={{ color: "green.400" }}
       onClick={(e) =>

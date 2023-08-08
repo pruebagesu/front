@@ -58,7 +58,7 @@ const SubmitButtons = <T extends FieldValues>({
         type={!onClick ? "submit" : "button"}
         mb={mb}
         onClick={handleClick}
-        isDisabled={!formState.isValid}
+        // isDisabled={!formState.isValid}
       >
         {formState.isSubmitting ? <Spinner /> : finalText}
       </Button>

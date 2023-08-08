@@ -52,6 +52,7 @@ function List<T>({
           onClick={(item) =>
             isClickable && onItemClick(item, isSelected(item), refetch)
           }
+          refetch={refetch}
           selected={isClickable && isSelected(item)}
         />
       ))}

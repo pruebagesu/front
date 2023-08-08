@@ -24,6 +24,7 @@ const ListItemWrapper = ({ onClick, selected, children }: Props) => {
             }
       }
       onClick={onClick}
+      width="100%"
       flexDir="row"
       alignItems="center"
       justifyContent="space-between"

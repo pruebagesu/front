@@ -1,40 +1,63 @@
 import { Flex, Text } from "@chakra-ui/react"
+import axios from "axios"
+import ActionButton from "components/ui/buttons/ActionButton"
 import ListItemWrapper from "components/ui/lists/ListItemWrapper"
 import CopyableText from "components/ui/text/CopiableText"
 import { AttachmentFromDB } from "schemas/AttachmentSchema"
+import { env } from "~/env.mjs"
 
 interface Props {
   item: AttachmentFromDB
   onClick: (attachment: AttachmentFromDB) => void
   selected?: boolean
+  refetch: () => void
 }
 
-const AttachmentItem = ({ item, onClick, selected }: Props) => {
+const AttachmentItem = ({ item, onClick, selected, refetch }: Props) => {
   return (
-    <ListItemWrapper onClick={() => onClick(item)} selected={selected}>
-      <Flex flexDir="column">
-        <Text
-          overflow="hidden"
-          textOverflow="ellipsis"
-          width="20rem"
-          maxWidth="50%"
-          whiteSpace="nowrap"
-          title={item.file_name}
-        >
-          {item.file_name}
-        </Text>
-        <CopyableText
-          text="Copiar link"
-          copyableText={item.url}
-          message="Link copiado con éxito!"
-        />
-      </Flex>
-      <Flex flexDir="column" alignItems="flex-end">
-        <Text as="span" fontSize="xs" color="purple.400">
-          {item?.file_ext}
-        </Text>
-      </Flex>
-    </ListItemWrapper>
+    <Flex alignItems="center">
+      <ListItemWrapper onClick={() => onClick(item)} selected={selected}>
+        <Flex width="100%" justifyContent="space-between" alignItems="center">
+          <CopyableText
+            text={item.description}
+            copyableText={item.url}
+            message="Link copiado con éxito"
+            fs="md"
+            mb={0.25}
+            mt={0.25}
+          />
+
+          <Text as="span" fontSize="xs" color="purple.400">
+            {item?.file_ext}
+          </Text>
+        </Flex>
+      </ListItemWrapper>
+      <ActionButton
+        action="delete"
+        onClick={async () => {
+          await axios.delete(
+            `${env.NEXT_PUBLIC_BACKEND_BASE_URL}/attachments/${item._id}`,
+            { withCredentials: true }
+          )
+          await refetch()
+        }}
+      />
+      <ActionButton
+        action="download"
+        onClick={async () => {
+          let element = document.createElement("a")
+          element.setAttribute("href", item.url)
+
+          element.style.display = "none"
+          document.body.appendChild(element)
+
+          element.click()
+
+          document.body.removeChild(element)
+        }}
+        fakeDelay={500}
+      />
+    </Flex>
   )
 }
 
