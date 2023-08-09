@@ -32,7 +32,11 @@ const Comments = ({ entity, entityId }: CommentsProps) => {
       reset()
       query.invalidateQueries([queryKey])
     } catch (error: any) {
-      toast({ title: error.response.data.message, status: "warning" })
+      toast({
+        title: error.response.data.message,
+        status: "warning",
+        position: "top",
+      })
     }
   }
 

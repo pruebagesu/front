@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react"
+import { Flex, useToast } from "@chakra-ui/react"
 import axios from "axios"
 import ActionButton from "components/ui/buttons/ActionButton"
 import ListItemWrapper from "components/ui/lists/ListItemWrapper"
@@ -14,6 +14,7 @@ interface Props {
 }
 
 const CommentItem = ({ item, onClick, selected, refetch }: Props) => {
+  const toast = useToast()
   return (
     <Flex alignItems="center">
       <ListItemWrapper onClick={() => onClick(item)} selected={selected}>
@@ -31,11 +32,19 @@ const CommentItem = ({ item, onClick, selected, refetch }: Props) => {
       <ActionButton
         action="delete"
         onClick={async () => {
-          await axios.delete(
-            `${env.NEXT_PUBLIC_BACKEND_BASE_URL}/comments/${item._id}`,
-            { withCredentials: true }
-          )
-          await refetch()
+          try {
+            await axios.delete(
+              `${env.NEXT_PUBLIC_BACKEND_BASE_URL}/comments/${item._id}`,
+              { withCredentials: true }
+            )
+            await refetch()
+          } catch (error: any) {
+            toast({
+              title: error.response.data.message,
+              status: "error",
+              position: "top",
+            })
+          }
         }}
       />
     </Flex>

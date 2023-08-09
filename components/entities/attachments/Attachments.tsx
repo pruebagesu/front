@@ -45,7 +45,11 @@ const Attachments = ({ entity, entityId }: AttachmentsProps) => {
       reset()
       query.invalidateQueries([queryKey])
     } catch (error: any) {
-      toast({ title: error.response.data.message, status: "warning" })
+      toast({
+        title: error.response.data.message,
+        status: "warning",
+        position: "top",
+      })
     }
   }
 
