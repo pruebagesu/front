@@ -35,7 +35,6 @@ const ClientForm = ({ clientId, queryKey }: ClientFormProps) => {
       onClose()
       queryKey && query.invalidateQueries(queryKey)
     } catch (error: any) {
-      console.log({ error })
       toast({ title: error.response.data.message, status: "warning" })
     }
   }

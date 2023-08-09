@@ -19,7 +19,7 @@ interface AttachmentsProps {
 const Attachments = ({ entity, entityId }: AttachmentsProps) => {
   const toast = useToast()
   const query = useQueryClient()
-  const queryKey = `attachments/${entity}/${entityId}`
+  const queryKey = `attachments/${entityId}`
   const onSubmit = async (state: Attachment, reset: () => void) => {
     console.log({ file: state.file })
     if (!state.file["0"]) {
@@ -45,7 +45,6 @@ const Attachments = ({ entity, entityId }: AttachmentsProps) => {
       reset()
       query.invalidateQueries([queryKey])
     } catch (error: any) {
-      console.log({ error })
       toast({ title: error.response.data.message, status: "warning" })
     }
   }

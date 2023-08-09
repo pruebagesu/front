@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { UserBasicInfo } from "./AuthSchema"
 
 export const AttachmentSchema = z.object({
   file: z.any().refine((val) => val?.length !== 0, {
@@ -18,6 +19,8 @@ export interface AttachmentFromDB {
   file_ext: string
   entity_id: string
   url: string
+  creatorInfo: UserBasicInfo
+  deleterInfo?: UserBasicInfo
 }
 
 export type Attachment = z.infer<typeof AttachmentSchema>

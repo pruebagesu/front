@@ -10,7 +10,7 @@ import {
   TabPanels,
   TabPanel,
 } from "@chakra-ui/react"
-import React, { ReactElement, ReactNode } from "react"
+import React, { ReactElement, ReactNode, useState } from "react"
 import { Sizes } from "schemas/UiSchemas"
 import MyTab from "../tabs/MyTab"
 
@@ -42,6 +42,7 @@ const MyModal = ({
   ml = 0,
   tabs = [],
 }: Props) => {
+  const [selectedTab, setSelectedTab] = useState(0)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const isChildrenAFunction = typeof children === "function"
@@ -62,7 +63,15 @@ const MyModal = ({
         {icon ? <i className={icon} /> : <span>{buttonText}</span>}
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
-        <Tabs variant="enclosed" colorScheme="blue" isLazy>
+        <Tabs
+          variant="enclosed"
+          colorScheme="blue"
+          isLazy
+          onChange={(index) => {
+            console.log({ index })
+            setSelectedTab(index)
+          }}
+        >
           <ModalOverlay />
           <ModalContent
             p={"0.5rem 0"}
@@ -72,9 +81,21 @@ const MyModal = ({
           >
             {(hasTabs || title) && (
               <TabList mt={"-3rem"} border="none">
-                {title && <MyTab text={title} icon="" />}
-                {tabs.map((t) => (
-                  <MyTab text={t.text} icon={t.icon} />
+                {title && (
+                  <MyTab
+                    text={title}
+                    icon=""
+                    isSelected={selectedTab === 0}
+                    hideUnselectedText
+                  />
+                )}
+                {tabs.map((t, index) => (
+                  <MyTab
+                    text={t.text}
+                    icon={t.icon}
+                    isSelected={selectedTab === index}
+                    hideUnselectedText
+                  />
                 ))}
               </TabList>
             )}

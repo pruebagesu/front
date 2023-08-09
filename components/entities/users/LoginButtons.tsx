@@ -44,9 +44,8 @@ const LoginButtons = () => {
                 position: "top",
               })
             })
-            .catch((error) => {
+            .catch(() => {
               setGettingCode(false)
-              console.log({ error })
             })
         }}
         isDisabled={!email || !!errors.email}
