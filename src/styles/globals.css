@@ -76,6 +76,10 @@ button {
   line-height: 1.4em;
 }
 
+html, body {
+  background-color: #e3e3e3 !important;
+}
+
 .bs { box-shadow: var(--boxShadow)}
 .bsh { box-shadow: var(--boxShadowHeavier)}
 .fwb { font-weight: bold }

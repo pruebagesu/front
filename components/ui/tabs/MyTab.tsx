@@ -10,7 +10,7 @@ const MyTab = ({
   text: string
   icon: string
   isSelected?: boolean
-  hideUnselectedText: boolean
+  hideUnselectedText?: boolean
 }) => {
   const showText = isSelected || !hideUnselectedText
 
@@ -21,7 +21,11 @@ const MyTab = ({
         onChange={(tab) => console.log("Tab changed", tab)}
         backgroundColor="#ddd"
         height="2.5rem" // Si no se posicionaban mal al cambiar el zoom
-        style={{ boxShadow: "0 -1px 3px rgba(0,0,0,0.1)" }}
+        style={{
+          boxShadow: "0 -1px 3px rgba(0,0,0,0.1)",
+          border: "1px solid rgba(0,0,0,0.1)",
+          borderBottom: "none",
+        }}
         color="gray"
         mr={1.5}
         userSelect="none" // Para que no se seleccione el texto al hacer click
