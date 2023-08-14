@@ -23,6 +23,7 @@ const ListItemWrapper = ({ onClick, selected, children }: Props) => {
               color: "#222",
             }
       }
+      _focus={{ backgroundColor: "gray.100" }}
       onClick={onClick}
       width="100%"
       flexDir="row"
