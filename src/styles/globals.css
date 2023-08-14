@@ -1736,25 +1736,25 @@ html, body {
 
 @media screen and (max-width: 500px) {
   html {
-    font-size: 15px
+    font-size: 16px
   }
 }
 
 @media screen and (max-width: 400px) {
   html {
-    font-size: 14px
+    font-size: 16px
   }
 }
 
 @media screen and (max-width: 330px) {
   html {
-    font-size: 12px
+    font-size: 14px
   }
 }
 
 @media screen and (max-width: 270px) {
   html {
-    font-size: 10px
+    font-size: 12px
   }
 }
 
