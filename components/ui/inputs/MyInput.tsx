@@ -20,6 +20,7 @@ function MyInput<T>({
   valueAsDate = false,
   type = "text",
   placeholder,
+  mt = 0,
   mb = 5,
   size,
   searchFn = false,
@@ -63,9 +64,15 @@ function MyInput<T>({
   }
 
   if (!show) return <></>
+  console.log({ errors })
 
   return (
-    <FormControl mb={mb} isInvalid={!!errors[fieldName as string]} flex={flex}>
+    <FormControl
+      mb={mb}
+      mt={mt}
+      isInvalid={!!errors[fieldName as string]}
+      flex={flex}
+    >
       {!!showLabel && <FormLabel mb={1}>{label}</FormLabel>}
       <Flex gap={2}>
         {searchFn && (

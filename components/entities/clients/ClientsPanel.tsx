@@ -12,6 +12,7 @@ import paramsGenerator from "helpers/paramsGenerator"
 import SaleItem from "../sales/SaleItem"
 import { SaleFromDB } from "schemas/SaleSchema"
 import Attachments from "../attachments/Attachments"
+import Comments from "../comments/Comments"
 
 const ClientsPanel = () => {
   const [selectedClient, setSelectedClient] = useState<ClientFromDB | null>()
@@ -77,6 +78,13 @@ const ClientsPanel = () => {
                   clientId={selectedClient?._id}
                   queryKey={queryKey}
                 />
+              ),
+            },
+            {
+              icon: "fas fa-comment",
+              text: "Comentarios",
+              component: (
+                <Comments entity="client" entityId={selectedClient?._id} />
               ),
             },
             {

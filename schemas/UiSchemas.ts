@@ -7,6 +7,7 @@ export interface MyInputProps<T> {
   type?: string
   flex?: number
   placeholder?: string
+  mt?: number
   mb?: number
   size?: Sizes
   searchFn?: ((state: any) => void) | boolean
@@ -17,7 +18,7 @@ export interface MyInputProps<T> {
 }
 
 export interface ListProps<T> {
-  ListItem: ({ item, onClick, selected }: ListItem<T>) => JSX.Element
+  ListItem: ({ item, onClick, selected, refetch }: ListItem<T>) => JSX.Element
   onItemClick?: (item: T, selected: boolean, refetch: () => void) => void
   isSelected?: (item: T) => boolean
   filterFunction?: (item: T) => boolean
@@ -33,6 +34,7 @@ type ListItem<T> = {
   item: T
   onClick: (item: T) => void
   selected?: boolean
+  refetch: () => void
 }
 
 export type Sizes = "xs" | "sm" | "md" | "lg"
