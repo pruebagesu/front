@@ -14,6 +14,7 @@ const SaleSummaryItem = ({ item, onClick, selected }: Props) => {
     <ListItemWrapper
       onClick={() => onClick(item, selected)}
       selected={selected}
+      w="auto"
     >
       <Flex flexDir="column" alignItems="center">
         <Text>{getMonthName(item._id.month - 1)}</Text>

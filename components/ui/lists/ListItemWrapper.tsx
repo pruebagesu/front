@@ -5,9 +5,15 @@ interface Props {
   onClick: () => void
   selected: boolean | undefined
   children: ReactNode
+  w?: string
 }
 
-const ListItemWrapper = ({ onClick, selected, children }: Props) => {
+const ListItemWrapper = ({
+  onClick,
+  selected,
+  children,
+  w = "100%",
+}: Props) => {
   return (
     <Card
       py={2}
@@ -25,7 +31,7 @@ const ListItemWrapper = ({ onClick, selected, children }: Props) => {
       }
       _focus={{ backgroundColor: "gray.100" }}
       onClick={onClick}
-      width="100%"
+      width={w}
       flexDir="row"
       alignItems="center"
       justifyContent="space-between"
