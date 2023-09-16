@@ -55,7 +55,7 @@ const Login: NextPage = () => {
     <Container marginTop={10}>
       <Card padding={3} maxWidth="">
         <Heading textAlign="center" mb={4}>
-          Iniciar sesión
+          Iniciar sesión (EN PREVIEW)
         </Heading>
         <MyForm
           zodSchema={LoginSchema}
