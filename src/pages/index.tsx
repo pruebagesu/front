@@ -13,7 +13,7 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>Emprende FS</title>
-        <meta name="description" content="EFS app frontend" />
+        <meta name="description" content="EFS app frontend!" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container marginTop={3}>
