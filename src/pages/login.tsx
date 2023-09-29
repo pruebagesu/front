@@ -13,14 +13,14 @@ const Login: NextPage = () => {
   const { setUser } = useAuth()
   const toast = useToast()
   const router = useRouter()
-
+  console.log({ cookies: document.cookie })
   const onSubmit = async (data: Login) => {
     const { email, code } = data
     try {
       const { data } = await axios.post(
         `${env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth/login/${email}`,
         { code },
-        { withCredentials: true }
+        { withCredentials: true } // Necesario para que se setee la cookie al recibirla cuando es Cross-Site request
       )
       const tokenPayload = data.data
       localStorage.setItem("user", JSON.stringify(tokenPayload))

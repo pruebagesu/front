@@ -43,20 +43,6 @@ function MyInput<T>({
   }
 
   const registerOptions = valueAsNumber ? { valueAsNumber } : { valueAsDate }
-  const FinalInput = (
-    <Input
-      size={size}
-      type={type}
-      placeholder={placeholder || label}
-      {...register(fieldName as string, registerOptions)}
-      onChange={(e) => {
-        register(fieldName as string, registerOptions).onChange(e)
-        triggerUpdate && setValue("trigger_update", Math.random())
-      }}
-    />
-  )
-
-  if (type === "hidden") return FinalInput
 
   let show = typeof showIf === "boolean" ? showIf : true
   if (showIf && Array.isArray(showIf)) {
@@ -82,7 +68,16 @@ function MyInput<T>({
             onClick={handleSearch}
           />
         )}
-        {FinalInput}
+        <Input
+          size={size}
+          type={type}
+          placeholder={placeholder || label}
+          {...register(fieldName as string, registerOptions)}
+          onChange={(e) => {
+            register(fieldName as string, registerOptions).onChange(e)
+            triggerUpdate && setValue("trigger_update", Math.random())
+          }}
+        />
       </Flex>
       <FormErrorMessage mt={1}>
         {errors[fieldName]?.message as ReactNode}
